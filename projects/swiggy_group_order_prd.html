@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swiggy Group Order + Split Payment - PRD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --swiggy-orange: #fc8019;
+            --swiggy-orange-light: #fff3e5;
+            --swiggy-dark: #282c3f;
+            --swiggy-text: #535665;
+            --swiggy-text-light: #7e808c;
+            --swiggy-bg: #8ba0b2;
+            /* Darker background to contrast with A4 sheet */
+            --swiggy-border: #eaeaec;
+            --swiggy-green: #60b246;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--swiggy-bg);
+            color: var(--swiggy-text);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Main Content - A4 Sizing */
+        .main-container {
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .content-wrapper {
+            background: white;
+            width: 210mm;
+            /* A4 width */
+            min-height: 297mm;
+            /* A4 height */
+            padding: 20mm;
+            /* A4 standard margin */
+            box-sizing: border-box;
+            border-radius: 4px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            color: var(--swiggy-dark);
+            font-weight: 700;
+        }
+
+        h2 {
+            font-size: 1.6em;
+            border-bottom: 2px solid var(--swiggy-orange);
+            display: inline-block;
+            padding-bottom: 4px;
+            margin-top: 2.5em;
+            margin-bottom: 0.8em;
+        }
+
+        h3 {
+            font-size: 1.2em;
+            color: var(--swiggy-dark);
+            margin-top: 1.5em;
+            margin-bottom: 0.8em;
+        }
+
+        p,
+        li {
+            font-size: 15px;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        /* Beautiful PRD Title Header */
+        .doc-header {
+            background-color: var(--swiggy-dark);
+            color: white;
+            padding: 40px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            border-bottom: 8px solid var(--swiggy-orange);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Subtle background decoration for header */
+        .doc-header::after {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(252, 128, 25, 0.15) 0%, rgba(252, 128, 25, 0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .doc-header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .doc-brand {
+            color: var(--swiggy-orange);
+            font-size: 1.2em;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        .doc-type {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .doc-header h1 {
+            color: white;
+            font-size: 2.6em;
+            margin: 0 0 24px 0;
+            line-height: 1.2;
+            letter-spacing: -1px;
+        }
+
+        .doc-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .meta-item {
+            flex: 1;
+            min-width: 140px;
+            border-left: 2px solid rgba(252, 128, 25, 0.5);
+            padding-left: 16px;
+        }
+
+        .meta-label {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .meta-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            background: var(--swiggy-bg);
+            color: var(--swiggy-dark);
+        }
+
+        .badge.primary {
+            background: var(--swiggy-orange);
+            color: white;
+        }
+
+        .badge.outline {
+            background: transparent;
+            color: var(--swiggy-orange);
+            border: 1px solid var(--swiggy-orange);
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            font-size: 13px;
+            /* Slightly smaller for A4 */
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 0 1px var(--swiggy-border);
+        }
+
+        th,
+        td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid var(--swiggy-border);
+            vertical-align: top;
+        }
+
+        th {
+            background-color: #fafafa;
+            color: var(--swiggy-dark);
+            font-weight: 700;
+            border-bottom: 2px solid var(--swiggy-border);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background-color: #fafafa;
+        }
+
+        /* Cards */
+        .fr-card {
+            background: white;
+            border: 1px solid var(--swiggy-border);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .fr-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--swiggy-orange);
+        }
+
+        .fr-card h4 {
+            margin-top: 0;
+            color: var(--swiggy-dark);
+            font-size: 1.1em;
+        }
+
+        .fr-section {
+            margin-top: 16px;
+        }
+
+        .fr-label {
+            display: inline-block;
+            font-size: 10px;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: var(--swiggy-orange);
+            background: var(--swiggy-orange-light);
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-bottom: 6px;
+        }
+
+        .fr-text {
+            margin-top: 0;
+            margin-bottom: 16px;
+            font-size: 13px;
+        }
+
+        /* Callout */
+        .callout {
+            background: var(--swiggy-orange-light);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 24px 0;
+            border: 1px solid rgba(252, 128, 25, 0.2);
+            border-left: 4px solid var(--swiggy-orange);
+        }
+
+        .callout strong {
+            color: var(--swiggy-dark);
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        /* User Story Sub-table */
+        .sub-story {
+            margin: 0;
+            padding-left: 20px;
+            color: var(--swiggy-text);
+        }
+
+        .sub-story li {
+            margin-bottom: 4px;
+        }
+
+        /* Workflow / Steps */
+        .workflow {
+            display: flex;
+            align-items: stretch;
+            margin: 24px 0;
+            gap: 12px;
+        }
+
+        .workflow-step {
+            flex: 1;
+            background: white;
+            border: 1px solid var(--swiggy-border);
+            border-radius: 8px;
+            padding: 16px;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            text-align: center;
+        }
+
+        .workflow-step h5 {
+            margin-top: 0;
+            color: var(--swiggy-orange);
+            font-size: 0.85em;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .workflow-step p {
+            font-size: 12px;
+            margin: 0;
+            line-height: 1.5;
+            color: var(--swiggy-text);
+        }
+
+        .workflow-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--swiggy-border);
+            font-size: 20px;
+        }
+
+        /* Print Settings for PDF Generation */
+        @page {
+            size: A4;
+            margin: 20mm;
+        }
+
+        @media print {
+            body {
+                background: white;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .main-container {
+                padding: 0;
+                width: 100%;
+                display: block;
+            }
+
+            .content-wrapper {
+                width: 100%;
+                min-height: auto;
+                padding: 0;
+                box-shadow: none;
+                border-radius: 0;
+            }
+
+            /* Page Break Avoidance */
+            table,
+            tr,
+            td,
+            th,
+            tbody,
+            thead,
+            tfoot {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+
+            .fr-card,
+            .workflow,
+            .callout,
+            .doc-meta {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+
+            h2,
+            h3,
+            h4 {
+                page-break-after: avoid;
+                break-after: avoid;
+            }
+
+            section {
+                padding-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="main-container">
+        <div class="content-wrapper">
+
+            <header id="doc-header" class="doc-header">
+                <div class="doc-header-top">
+                    <div class="doc-brand">SWIGGY</div>
+                    <div class="doc-type">Product Requirements Document</div>
+                </div>
+
+                <h1>Swiggy Group Order + Split Payment</h1>
+
+                <div class="doc-meta">
+                    <div class="meta-item">
+                        <div class="meta-label">Feature Name</div>
+                        <div class="meta-value">Group Order & Split Payment</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">Status</div>
+                        <div class="meta-value"><span class="badge primary">Draft v1.0</span></div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">Date</div>
+                        <div class="meta-value">March 2026</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">Author</div>
+                        <div class="meta-value">Vishwajit Lad</div>
+                    </div>
+                </div>
+            </header>
+
+            <section id="stakeholders">
+                <h2>DOCUMENT STAKEHOLDERS</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Role</th>
+                            <th>Name</th>
+                            <th>Responsibility</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Product Manager (Author)</strong></td>
+                            <td>Vishwajit Lad</td>
+                            <td>PRD owner, problem definition, requirements</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Senior Product Manager</strong></td>
+                            <td>TBD</td>
+                            <td>Strategic alignment, PRD review and approval</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Design Head</strong></td>
+                            <td>TBD</td>
+                            <td>UX direction, design system compliance</td>
+                        </tr>
+                        <tr>
+                            <td><strong>UI / UX Designer</strong></td>
+                            <td>TBD</td>
+                            <td>Wireframes, user flows, prototyping</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Engineering Lead</strong></td>
+                            <td>TBD</td>
+                            <td>Technical feasibility, architecture decisions</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Backend Engineer</strong></td>
+                            <td>TBD</td>
+                            <td>Session sync, calculation logic, notifications</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mobile Engineer</strong> (iOS / Android)</td>
+                            <td>TBD</td>
+                            <td>Deep-link handling, real-time UI updates</td>
+                        </tr>
+                        <tr>
+                            <td><strong>QA Engineer</strong></td>
+                            <td>TBD</td>
+                            <td>Acceptance criteria validation, edge case testing</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Data Analyst</strong></td>
+                            <td>TBD</td>
+                            <td>Metrics instrumentation, success tracking</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Legal & Policy Expert</strong></td>
+                            <td>TBD</td>
+                            <td>Data retention, payment compliance (PCI-DSS)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Marketing / Growth</strong></td>
+                            <td>TBD</td>
+                            <td>Feature launch, in-app promotion, adoption strategy</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section id="revision-history">
+                <h2>Revision History</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Version</th>
+                            <th>Date</th>
+                            <th>Author</th>
+                            <th>What Changed</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="badge outline">v0.1 to v0.7</span></td>
+                            <td>March 2026</td>
+                            <td>Vishwajit Lad</td>
+                            <td>Iterative drafting from Problem Statement to complete PRD locked.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section id="problem-statement">
+                <h2>Section 1 — Problem Statement</h2>
+                <p>When urban professionals, friend groups, and co-living flatmates order food together, the experience
+                    breaks down at two critical moments — when food arrives and nobody knows what belongs to whom, and
+                    when the bill comes and one person is left paying for everyone. Groups need a way to split fairly
+                    and track food ownership without disturbing the event flow — but Swiggy offers no native way to do
+                    this, forcing users onto WhatsApp, calculators, and UPI after the order is done. This gap directly
+                    impacts Swiggy's average order value and repeat group ordering frequency, as post-order friction
+                    discourages groups from making Swiggy their default choice for shared meals.</p>
+            </section>
+
+            <section id="pain-points">
+                <h2>Section 2 — Pain Points</h2>
+                <p>Mapped sequentially across the group ordering experience: <em>pre-order → delivery → post-order</em>.
+                </p>
+
+                <div class="workflow">
+                    <div class="workflow-step">
+                        <h5>Pre-Order</h5>
+                        <p>Coordination overhead, verbal collection, manual consolidation.</p>
+                    </div>
+                    <div class="workflow-arrow">→</div>
+                    <div class="workflow-step">
+                        <h5>Delivery</h5>
+                        <p>Food ownership chaos, no item tagging, confusion at arrival.</p>
+                    </div>
+                    <div class="workflow-arrow">→</div>
+                    <div class="workflow-step">
+                        <h5>Post-Order</h5>
+                        <p>Unfair splitting, reimbursement friction, platform abandonment.</p>
+                    </div>
+                </div>
+
+                <ul>
+                    <li><strong>Pain Point 1 — Coordination overhead before ordering:</strong> Affected Persona: Persona
+                        1 — Office Lunch Coordinator. The coordinator collects everyone's order verbally or over
+                        WhatsApp, manually consolidates it, and places the order alone. There is no shared cart or
+                        collaborative ordering mechanism inside Swiggy. The mental load falls entirely on one person
+                        before the food is even ordered.</li>
+                    <li><strong>Pain Point 2 — No item ownership at checkout:</strong> Affected Personas: All Personas.
+                        When the order is placed, there is no way to tag which item belongs to which person inside
+                        Swiggy. Ownership exists only in people's memory — or not at all. This creates the foundation
+                        for every downstream confusion.</li>
+                    <li><strong>Pain Point 3 — Food ownership chaos at delivery:</strong> Affected Personas: Persona 2 —
+                        Friends Group, Persona 3 — Co-living Group. When food arrives, nobody remembers with certainty
+                        who ordered what — especially for similar-looking items. The result is either someone eating the
+                        wrong food silently or a visible argument at the door. Most acute in casual settings where
+                        nobody was tracking carefully.</li>
+                    <li><strong>Pain Point 4 — Unfair equal splitting:</strong> Affected Personas: Persona 1 — Office
+                        Coordinator, Persona 3 — Co-living Group. When the bill is split equally, people who ordered
+                        less subsidise people who ordered more. In office settings this creates silent resentment. In
+                        co-living groups it becomes a recurring pattern that builds frustration over time. There is no
+                        item-level dutch billing option inside Swiggy today.</li>
+                    <li><strong>Pain Point 5 — Reimbursement friction after the event:</strong> Affected Personas:
+                        Persona 1 — Office Coordinator, Persona 2 — Friends Group. After one person pays the full bill,
+                        collecting money from others happens entirely outside Swiggy — WhatsApp reminders, UPI requests,
+                        follow-up messages. Some people delay, some forget, some avoid. The person who paid absorbs both
+                        the financial float and the social awkwardness of chasing.</li>
+                    <li><strong>Pain Point 6 — Platform abandonment at the billing moment:</strong> Affected Personas:
+                        All Personas. Because Swiggy has no splitting or tagging capability, users are forced to switch
+                        to a calculator, WhatsApp, and GPay the moment the bill arrives. The transaction that Swiggy
+                        initiated ends outside Swiggy. This is a direct platform retention failure at the highest-intent
+                        moment of the experience.</li>
+                </ul>
+            </section>
+
+            <section id="user-stories">
+                <h2>Section 3 — User Stories</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Persona</th>
+                            <th>High-Level Story</th>
+                            <th>Sub Stories</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Persona 1 — Office Lunch Coordinator</strong></td>
+                            <td>As an office lunch coordinator, I want to manage a group food order and settle the bill
+                                fairly without manual effort, so that I am not burdened with coordination or
+                                reimbursement chasing.</td>
+                            <td>
+                                <ul class="sub-story">
+                                    <li>Create group order and invite colleagues.</li>
+                                    <li>Each item tagged to the person who ordered it.</li>
+                                    <li>Choose dutch billing option at checkout.</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Persona 2 — Weekend Friends Group</strong></td>
+                            <td>As a member of a friends group, I want our group order and bill to be handled inside
+                                Swiggy, so that the evening ends without any awkward follow-ups or pending payments the
+                                next day.</td>
+                            <td>
+                                <ul class="sub-story">
+                                    <li>Join shared group order created by a friend.</li>
+                                    <li>Option for one person to pay the full bill as a gesture.</li>
+                                    <li>Bill settlement to happen inside Swiggy before order confirmation.</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Persona 3 — Co-living Group</strong></td>
+                            <td>As a co-living flatmate, I want a fast and automatic way to split every group order
+                                fairly based on what each person ordered, so that billing is always accurate and nobody
+                                overpays over time.</td>
+                            <td>
+                                <ul class="sub-story">
+                                    <li>Quickly tag items in shared cart.</li>
+                                    <li>Dutch billing as default.</li>
+                                    <li>App automatically calculates share and notifies amount owed.</li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section id="scope">
+                <h2>Section 4A — Scope & Out of Scope</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 50%;">✅ In Scope</th>
+                            <th style="width: 50%;">❌ Out of Scope</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <ul>
+                                    <li>"Group Order" entry point on restaurant page</li>
+                                    <li>Shareable group order link generation</li>
+                                    <li>Collaborative cart — members add their own items</li>
+                                    <li>Item tagging (auto-tagged or manual assignment)</li>
+                                    <li>Three billing options: Dutch, Equal Split, Paid-by-One</li>
+                                    <li>Automatic share calculation</li>
+                                    <li>In-app push notification for shares</li>
+                                    <li>Single payment by order creator to Swiggy</li>
+                                    <li>Maximum 12 members per session</li>
+                                </ul>
+                            </td>
+                            <td>
+                                <ul>
+                                    <li>Multi-restaurant ordering within one group order</li>
+                                    <li>In-app peer-to-peer payment settlement between members</li>
+                                    <li>Subgroup-level billing logic</li>
+                                    <li>Group order creation before restaurant selection</li>
+                                    <li>Swiggy contacts or friends list integrations</li>
+                                    <li>Scheduled or pre-planned group orders</li>
+                                    <li>Group order session expiry timer</li>
+                                    <li>Full bill passing to another member</li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section id="functional-requirements">
+                <h2>Section 5 — Functional Requirements</h2>
+
+                <h3>Cluster 1 — Group Order Creation</h3>
+                <div class="fr-card">
+                    <h4>FR-1.1 — Group Order Entry Point</h4>
+                    <div class="fr-section">
+                        <span class="fr-label">User Story</span>
+                        <p class="fr-text">As an order creator, I want to see a 'Group Order' option on the restaurant
+                            page, so that I can initiate a group order without leaving the restaurant I've already
+                            chosen.</p>
+                    </div>
+                    <div class="fr-section">
+                        <span class="fr-label">Functional Requirement</span>
+                        <p class="fr-text">The system must display a 'Group Order' button on the restaurant page
+                            alongside the existing 'Order Now' option. This button must be visible only when the user is
+                            logged in to Swiggy.</p>
+                    </div>
+                    <div class="fr-section">
+                        <span class="fr-label">Acceptance Criteria</span>
+                        <p class="fr-text"><strong>GIVEN</strong> a logged-in Swiggy user is on any restaurant page.
+                            <strong>WHEN</strong> the page loads. <strong>THEN</strong> a 'Group Order' button must be
+                            displayed alongside the existing 'Order Now' button. <strong>AND THEN</strong> tapping
+                            'Group Order' must initiate the group order creation flow without navigating away from the
+                            restaurant page.</p>
+                    </div>
+                </div>
+
+                <h3>Cluster 4 — Billing Option Selection</h3>
+                <div class="fr-card">
+                    <h4>FR-4.2 — Dutch Billing Calculation</h4>
+                    <div class="fr-section">
+                        <span class="fr-label">User Story</span>
+                        <p class="fr-text">As an order creator who selected Dutch billing, I want each member's share to
+                            be calculated based only on the items tagged to them, so that everyone pays exactly for what
+                            they ordered.</p>
+                    </div>
+                    <div class="fr-section">
+                        <span class="fr-label">Functional Requirement</span>
+                        <p class="fr-text">When Dutch is selected, the system must calculate each member's share by
+                            summing the prices of all items tagged to that member, including proportional taxes and an
+                            equal share of the delivery fee.</p>
+                    </div>
+                    <div class="fr-section">
+                        <span class="fr-label">Acceptance Criteria</span>
+                        <p class="fr-text"><strong>GIVEN</strong> the order creator has selected Dutch.
+                            <strong>WHEN</strong> the creator views the breakdown. <strong>THEN</strong> each member's
+                            share must reflect the exact sum of item prices tagged to them. <strong>AND THEN</strong>
+                            taxes must be applied proportionally. <strong>AND THEN</strong> the delivery fee must be
+                            divided equally.</p>
+                    </div>
+                </div>
+
+                <h3>Cluster 5 — Checkout & Payment</h3>
+                <div class="fr-card">
+                    <h4>FR-5.2 — Creator Completes Payment</h4>
+                    <div class="fr-section">
+                        <span class="fr-label">User Story</span>
+                        <p class="fr-text">As an order creator, I want to pay the full group order bill through my
+                            preferred payment method, so that the order is placed immediately without waiting for other
+                            members to pay.</p>
+                    </div>
+                    <div class="fr-section">
+                        <span class="fr-label">Functional Requirement</span>
+                        <p class="fr-text">The system must allow the creator to complete payment for the full group
+                            order amount using any of Swiggy's existing payment methods. The payment flow must be
+                            identical to Swiggy's existing single-order payment flow with no modifications.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="success-metrics">
+                <h2>Section 8 — Success Metrics</h2>
+                <div class="callout">
+                    <strong>🎯 North Star Metric: Weekly Completed Group Order Sessions</strong>
+                    <p style="margin: 0; font-size: 14px;">Number of group order sessions per week where a group order
+                        is created, all members commit their orders, the creator completes payment, and share
+                        notifications are successfully delivered to all members.</p>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Type</th>
+                            <th>Baseline</th>
+                            <th>Target</th>
+                            <th>Timeframe</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Weekly Completed Group Order Sessions</td>
+                            <td><strong>North Star</strong></td>
+                            <td>0</td>
+                            <td>Set after first 30 days of launch data</td>
+                            <td>6 months</td>
+                        </tr>
+                        <tr>
+                            <td>Session Completion Rate</td>
+                            <td>Leading Indicator</td>
+                            <td>0%</td>
+                            <td>70% of created sessions result in placed order</td>
+                            <td>Month 3</td>
+                        </tr>
+                        <tr>
+                            <td>Member Commit Rate</td>
+                            <td>Leading Indicator</td>
+                            <td>0%</td>
+                            <td>80% of joined members commit their order</td>
+                            <td>Month 3</td>
+                        </tr>
+                        <tr>
+                            <td>Group Order Adoption Rate</td>
+                            <td>Primary — Lagging</td>
+                            <td>0%</td>
+                            <td>20% of eligible group ordering occasions</td>
+                            <td>Month 6</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section id="architecture">
+                <h2>Appendix — Key Architecture Decisions</h2>
+                <div class="fr-card" style="margin-top: 24px;">
+                    <ul style="margin: 0;">
+                        <li><strong>Payment Architecture (V1):</strong> One person (order creator) pays the full bill to
+                            Swiggy. Swiggy calculates shares automatically. Actual reimbursement happens peer-to-peer
+                            outside Swiggy via GPay, UPI, or cash.</li>
+                        <li style="margin-top: 12px;"><strong>Two-Phase Cart Commit Mechanic:</strong> Phase 1 — Member
+                            builds personal temporary cart freely. Phase 2 — Member taps 'Add to Group's Cart'
+                            committing selection to creator's view.</li>
+                        <li style="margin-top: 12px;"><strong>Co-located Design Principle:</strong> Designed for groups
+                            physically in the same room. Coordination decisions made verbally.</li>
+                    </ul>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+</body>
+
+</html>

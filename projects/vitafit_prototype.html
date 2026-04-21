@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VitaFit — Mobile Prototype</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a12;
+    --surface: #12121e;
+    --surface2: #1a1a2e;
+    --border: #252538;
+    --orange: #ff6b2b;
+    --orange2: #ff9559;
+    --blue: #3b9eff;
+    --blue2: #6eb8ff;
+    --green: #22d473;
+    --purple: #8b5cf6;
+    --red: #ff4d6d;
+    --amber: #fbbf24;
+    --text: #f0f0fa;
+    --text2: #9494b4;
+    --text3: #4a4a68;
+    --syne: 'Syne', sans-serif;
+    --dm: 'DM Sans', sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body {
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    font-family: var(--dm);
+    padding: 20px 0 40px;
+  }
+
+  /* ── Desktop wrapper ── */
+  .desktop-bar {
+    width: 100%;
+    max-width: 900px;
+    padding: 0 24px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .desktop-bar h1 {
+    font-family: var(--syne);
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--orange);
+    letter-spacing: -0.5px;
+  }
+  .desktop-bar p { font-size: 12px; color: var(--text3); }
+  .feature-tabs {
+    display: flex;
+    gap: 8px;
+  }
+  .ftab {
+    padding: 7px 18px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text2);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .2s;
+    font-family: var(--dm);
+  }
+  .ftab.active-f1 { background: var(--orange)22; border-color: var(--orange); color: var(--orange); }
+  .ftab.active-f2 { background: var(--blue)22; border-color: var(--blue); color: var(--blue); }
+
+  /* ── Phone frame ── */
+  .phone-wrap {
+    position: relative;
+    width: 375px;
+    flex-shrink: 0;
+  }
+  .phone-frame {
+    width: 375px;
+    height: 780px;
+    background: #0d0d1a;
+    border-radius: 44px;
+    border: 2px solid #2a2a42;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 40px 100px #000000cc, 0 0 0 1px #3a3a5266, inset 0 0 0 1px #ffffff08;
+  }
+
+  /* ── Screen system ── */
+  .screen {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    transform: translateX(100%);
+    opacity: 0;
+    transition: transform .35s cubic-bezier(.4,0,.2,1), opacity .35s;
+    background: var(--bg);
+  }
+  .screen::-webkit-scrollbar { display:none; }
+  .screen.active {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  .screen.exit-left {
+    transform: translateX(-30%);
+    opacity: 0;
+  }
+
+  /* ── Status bar ── */
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: inherit;
+  }
+  .status-icons { display:flex; gap:5px; align-items:center; }
+  .signal-bar { display:flex; gap:2px; align-items:flex-end; }
+  .signal-bar span { width:3px; background:var(--text); border-radius:1px; }
+
+  /* ── Nav bar ── */
+  .nav-bar {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px 8px;
+    gap: 10px;
+  }
+  .back-btn {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    display: flex; align-items:center; justify-content:center;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text);
+    transition: all .15s;
+    flex-shrink: 0;
+  }
+  .back-btn:active { transform: scale(.92); background: var(--border); }
+  .nav-title {
+    font-family: var(--syne);
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    flex: 1;
+  }
+  .nav-action {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--orange);
+    cursor: pointer;
+  }
+
+  /* ── Bottom tab bar ── */
+  .tab-bar {
+    position: sticky;
+    bottom: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex;
+    padding: 8px 0 16px;
+  }
+  .tab-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+    padding: 4px 0;
+  }
+  .tab-icon { font-size: 18px; line-height: 1; }
+  .tab-label { font-size: 10px; font-weight: 500; color: var(--text3); }
+  .tab-item.active .tab-label { color: var(--orange); }
+  .tab-dot {
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--orange);
+    margin: 0 auto;
+  }
+
+  /* ── Cards & sections ── */
+  .section-pad { padding: 0 16px; }
+  .section-title {
+    font-family: var(--syne);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text3);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .card {
+    background: var(--surface);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+
+  /* ── Streak widget ── */
+  .streak-widget {
+    background: linear-gradient(135deg, #1e1008 0%, #2a1508 50%, #1a0c04 100%);
+    border-radius: 20px;
+    border: 1px solid var(--orange)44;
+    padding: 20px;
+    margin: 0 16px 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .streak-widget::before {
+    content: '';
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 120px; height: 120px;
+    background: radial-gradient(circle, var(--orange)22 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .streak-number {
+    font-family: var(--syne);
+    font-size: 56px;
+    font-weight: 800;
+    color: var(--orange);
+    line-height: 1;
+    letter-spacing: -2px;
+  }
+  .streak-label { font-size: 13px; color: var(--orange2); font-weight: 600; margin-top: 2px; }
+  .streak-sub { font-size: 11px; color: var(--text3); margin-top: 6px; }
+  .at-risk-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--amber)22;
+    border: 1px solid var(--amber)55;
+    color: var(--amber);
+    font-size: 10px; font-weight: 700;
+    padding: 4px 10px; border-radius: 20px;
+    margin-top: 10px;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity:1; }
+    50% { opacity:.6; }
+  }
+  .streak-row { display:flex; align-items:flex-end; gap:12px; }
+  .streak-days {
+    display: flex; gap: 5px; margin-top: 12px;
+  }
+  .day-dot {
+    width: 28px; height: 28px; border-radius: 8px;
+    display: flex; align-items:center; justify-content:center;
+    font-size: 9px; font-weight: 700;
+  }
+  .day-dot.done { background: var(--orange); color: #fff; }
+  .day-dot.today { background: var(--orange)33; border: 1.5px solid var(--orange); color: var(--orange); }
+  .day-dot.future { background: var(--surface2); color: var(--text3); border: 1px solid var(--border); }
+
+  /* ── Challenge card ── */
+  .challenge-card {
+    background: var(--surface);
+    border-radius: 18px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all .2s;
+    position: relative;
+  }
+  .challenge-card:active { transform: scale(.97); }
+  .challenge-card-accent {
+    height: 4px;
+    background: linear-gradient(90deg, var(--orange), var(--orange2));
+  }
+  .challenge-card-body { padding: 14px 16px; }
+  .challenge-card-title {
+    font-family: var(--syne);
+    font-size: 15px; font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .challenge-card-meta { font-size: 11px; color: var(--text2); display:flex; gap:12px; flex-wrap:wrap; }
+  .challenge-card-meta span { display:flex; align-items:center; gap:4px; }
+  .progress-bar-wrap { margin-top: 10px; }
+  .progress-bar-bg { height: 4px; background: var(--border); border-radius: 4px; overflow:hidden; }
+  .progress-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--orange), var(--orange2)); transition: width .6s ease; }
+  .progress-label { font-size: 10px; color: var(--text3); margin-top: 4px; display:flex; justify-content:space-between; }
+
+  /* ── Badges ── */
+  .badge-row { display:flex; gap: 8px; overflow-x:auto; padding-bottom: 4px; scrollbar-width:none; }
+  .badge-row::-webkit-scrollbar { display:none; }
+  .badge-item {
+    flex-shrink: 0;
+    width: 72px;
+    display: flex; flex-direction:column; align-items:center; gap: 5px;
+  }
+  .badge-circle {
+    width: 52px; height: 52px; border-radius: 14px;
+    display:flex; align-items:center; justify-content:center;
+    font-size: 22px;
+    position: relative;
+  }
+  .badge-circle.earned { background: linear-gradient(135deg, var(--orange)33, var(--orange2)22); border: 1.5px solid var(--orange)77; }
+  .badge-circle.locked { background: var(--surface2); border: 1px solid var(--border); filter: grayscale(1); opacity: .5; }
+  .badge-circle .lock-icon { position:absolute; bottom:-2px; right:-2px; font-size: 11px; }
+  .badge-name { font-size: 9px; color: var(--text2); text-align:center; font-weight: 500; line-height: 1.2; }
+
+  /* ── Leaderboard ── */
+  .lb-row {
+    display:flex; align-items:center; gap: 12px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .lb-row:last-child { border-bottom: none; }
+  .lb-row:active { background: var(--surface2); }
+  .lb-row.me { background: var(--orange)0d; border-bottom-color: var(--orange)22; }
+  .lb-rank {
+    width: 26px; text-align:center;
+    font-family: var(--syne); font-size: 14px; font-weight: 800;
+  }
+  .lb-rank.gold { color: #ffd700; }
+  .lb-rank.silver { color: #c0c0c0; }
+  .lb-rank.bronze { color: #cd7f32; }
+  .lb-rank.me-rank { color: var(--orange); }
+  .lb-avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size: 14px; font-weight: 700; flex-shrink:0;
+  }
+  .lb-name { flex:1; font-size: 13px; font-weight: 500; color: var(--text); }
+  .lb-score { font-family: var(--syne); font-size: 14px; font-weight: 700; color: var(--orange); }
+
+  /* ── Instructor card ── */
+  .instructor-header {
+    padding: 20px 16px 0;
+    display:flex; gap: 14px; align-items:flex-start;
+  }
+  .instructor-avatar {
+    width: 64px; height: 64px; border-radius: 18px;
+    display:flex; align-items:center; justify-content:center;
+    font-size: 28px; font-weight: 800;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .online-dot {
+    position:absolute; bottom:2px; right:2px;
+    width:10px; height:10px; border-radius:50%;
+    background: var(--green);
+    border: 2px solid var(--bg);
+  }
+  .instructor-info { flex:1; }
+  .instructor-name { font-family: var(--syne); font-size: 18px; font-weight: 800; color: var(--text); }
+  .instructor-title { font-size: 12px; color: var(--text2); margin-top: 2px; }
+  .instructor-stats { display:flex; gap: 16px; margin-top: 10px; }
+  .inst-stat { display:flex; flex-direction:column; align-items:center; }
+  .inst-stat-num { font-family: var(--syne); font-size: 16px; font-weight: 800; color: var(--text); }
+  .inst-stat-label { font-size: 10px; color: var(--text3); margin-top: 1px; }
+  .follow-btn {
+    margin: 14px 16px 0;
+    padding: 12px 0;
+    border-radius: 14px;
+    border: none;
+    cursor: pointer;
+    font-family: var(--syne); font-size: 14px; font-weight: 700;
+    transition: all .2s;
+    width: calc(100% - 32px);
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .follow-btn.unfollow {
+    background: var(--blue)22;
+    border: 1.5px solid var(--blue);
+    color: var(--blue);
+  }
+  .follow-btn.following {
+    background: var(--green)22;
+    border: 1.5px solid var(--green);
+    color: var(--green);
+  }
+  .follow-btn:active { transform: scale(.97); }
+
+  /* ── Group feed post ── */
+  .feed-post {
+    background: var(--surface);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    padding: 14px;
+    margin-bottom: 10px;
+  }
+  .feed-post-header { display:flex; gap: 10px; align-items:center; margin-bottom: 10px; }
+  .feed-avatar {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    display:flex; align-items:center; justify-content:center;
+    font-size: 14px; font-weight: 800; color: #fff; flex-shrink:0;
+  }
+  .feed-author { font-size: 13px; font-weight: 600; color: var(--text); }
+  .feed-time { font-size: 10px; color: var(--text3); }
+  .feed-text { font-size: 13px; color: var(--text2); line-height: 1.55; margin-bottom: 10px; }
+  .feed-reactions {
+    display:flex; gap: 8px; align-items:center;
+  }
+  .reaction-btn {
+    display:flex; align-items:center; gap: 4px;
+    padding: 5px 10px; border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    font-size: 11px; color: var(--text2);
+    cursor: pointer; transition: all .15s;
+  }
+  .reaction-btn.active { background: var(--blue)22; border-color: var(--blue)66; color: var(--blue); }
+  .reaction-btn:active { transform: scale(.94); }
+
+  /* ── Inbox message ── */
+  .inbox-msg {
+    background: linear-gradient(135deg, #0e1e2e, #0a1520);
+    border: 1px solid var(--blue)33;
+    border-radius: 18px;
+    padding: 18px;
+    margin: 0 16px 12px;
+    position: relative;
+    overflow: hidden;
+  }
+  .inbox-msg::before {
+    content:'';
+    position:absolute; top:-20px; right:-20px;
+    width:80px; height:80px;
+    background: radial-gradient(circle, var(--blue)22 0%, transparent 70%);
+  }
+  .inbox-from { font-size: 11px; color: var(--blue2); font-weight: 600; margin-bottom: 8px; display:flex; align-items:center; gap:6px; }
+  .inbox-body { font-size: 14px; color: var(--text); line-height: 1.6; }
+  .inbox-body strong { color: var(--blue2); }
+  .inbox-cta {
+    margin-top: 14px;
+    padding: 11px 0;
+    background: var(--blue);
+    border-radius: 12px;
+    text-align:center;
+    font-family: var(--syne); font-size: 13px; font-weight: 700;
+    color: #fff; cursor: pointer; transition: all .15s;
+    border: none; width: 100%;
+  }
+  .inbox-cta:active { transform: scale(.97); opacity:.9; }
+
+  /* ── Milestone screen ── */
+  .milestone-bg {
+    background: radial-gradient(ellipse at 50% 30%, #0a2a1a 0%, var(--bg) 70%);
+    min-height: 100%;
+    display:flex; flex-direction:column; align-items:center;
+    padding: 0 16px 24px;
+    text-align:center;
+  }
+  .confetti-area {
+    font-size: 40px; line-height: 1; padding: 24px 0 8px;
+    animation: bounce 1s ease infinite alternate;
+  }
+  @keyframes bounce { from{transform:scale(1)} to{transform:scale(1.1)} }
+  .milestone-title {
+    font-family: var(--syne); font-size: 26px; font-weight: 800;
+    color: var(--text); margin-bottom: 6px; line-height: 1.2;
+  }
+  .milestone-sub { font-size: 13px; color: var(--text2); line-height: 1.5; margin-bottom: 24px; }
+  .big-badge {
+    width: 100px; height: 100px; border-radius: 26px;
+    background: linear-gradient(135deg, var(--green)33, var(--green)11);
+    border: 2px solid var(--green)77;
+    display:flex; align-items:center; justify-content:center;
+    font-size: 48px; margin: 0 auto 20px;
+    box-shadow: 0 0 40px var(--green)33;
+  }
+  .shoutout-banner {
+    background: linear-gradient(135deg, #0e2a1e, #0a1e14);
+    border: 1px solid var(--green)44;
+    border-radius: 16px;
+    padding: 16px;
+    width: 100%;
+    display:flex; align-items:center; gap: 12px;
+    cursor: pointer; transition: all .2s; text-align:left;
+  }
+  .shoutout-banner:active { transform: scale(.97); }
+  .shoutout-bell { font-size: 24px; flex-shrink:0; animation: wiggle 2s ease infinite; }
+  @keyframes wiggle {
+    0%,90%,100% { transform: rotate(0); }
+    92% { transform: rotate(-15deg); }
+    96% { transform: rotate(15deg); }
+  }
+  .shoutout-text { font-size: 13px; color: var(--text); font-weight: 500; }
+  .shoutout-from { font-size: 11px; color: var(--green); margin-top: 3px; font-weight: 600; }
+
+  /* ── Utility ── */
+  .chip {
+    display:inline-flex; align-items:center; gap:5px;
+    padding: 5px 12px; border-radius: 20px;
+    font-size: 11px; font-weight: 600;
+  }
+  .chip-orange { background: var(--orange)22; color: var(--orange); border: 1px solid var(--orange)44; }
+  .chip-blue { background: var(--blue)22; color: var(--blue); border: 1px solid var(--blue)44; }
+  .chip-green { background: var(--green)22; color: var(--green); border: 1px solid var(--green)44; }
+  .chip-purple { background: var(--purple)22; color: var(--purple); border: 1px solid var(--purple)44; }
+
+  .divider { height: 1px; background: var(--border); margin: 12px 16px; }
+
+  .big-cta {
+    margin: 8px 16px;
+    padding: 15px 0;
+    border-radius: 16px;
+    border: none;
+    cursor: pointer;
+    font-family: var(--syne); font-size: 15px; font-weight: 700;
+    transition: all .2s; width: calc(100% - 32px);
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .cta-orange { background: linear-gradient(135deg, var(--orange), #ff8c42); color: #fff; box-shadow: 0 8px 24px var(--orange)44; }
+  .cta-blue { background: linear-gradient(135deg, var(--blue), #60c8ff); color: #fff; box-shadow: 0 8px 24px var(--blue)44; }
+  .cta-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text2); }
+  .big-cta:active { transform: scale(.97); opacity:.9; }
+
+  .small-text { font-size: 11px; color: var(--text3); text-align:center; padding: 0 16px 8px; }
+
+  .screen-label {
+    font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform:uppercase;
+    color: var(--text3); text-align:center; padding: 6px 0 0;
+  }
+
+  /* ── Challenge detail specifics ── */
+  .goal-ring {
+    display:flex; align-items:center; justify-content:center;
+    gap: 20px; padding: 18px 16px;
+  }
+  .ring-wrap { display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .ring-num { font-family: var(--syne); font-size: 32px; font-weight: 800; color: var(--orange); }
+  .ring-label { font-size: 11px; color: var(--text2); }
+  .ring-sep { width: 1px; height: 40px; background: var(--border); }
+  .participants-row {
+    display:flex; align-items:center; gap: 8px;
+    padding: 0 16px 14px;
+  }
+  .avatar-stack { display:flex; }
+  .avatar-stack span {
+    width: 24px; height: 24px; border-radius: 50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size: 9px; font-weight: 700; color:#fff;
+    border: 2px solid var(--surface);
+    margin-left: -6px;
+  }
+  .avatar-stack span:first-child { margin-left:0; }
+  .participants-text { font-size: 12px; color: var(--text2); }
+
+  .session-item {
+    display:flex; align-items:center; gap:12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    cursor:pointer; transition: background .15s;
+  }
+  .session-item:last-child { border-bottom: none; }
+  .session-item:active { background: var(--surface2); }
+  .session-thumb {
+    width: 52px; height: 52px; border-radius: 12px;
+    display:flex; align-items:center; justify-content:center;
+    font-size: 22px; flex-shrink:0;
+  }
+  .session-info { flex:1; }
+  .session-title { font-size: 14px; font-weight: 600; color: var(--text); }
+  .session-meta { font-size: 11px; color: var(--text2); margin-top: 2px; display:flex; gap:10px; }
+  .session-arrow { color: var(--text3); font-size: 16px; }
+
+  /* ── Notification bar ── */
+  .notif-bar {
+    background: linear-gradient(135deg, #1a0e04, #251508);
+    border: 1px solid var(--orange)33;
+    border-radius: 14px;
+    padding: 12px 14px;
+    margin: 0 16px 12px;
+    display:flex; align-items:center; gap: 10px;
+    cursor: pointer; transition: all .2s;
+  }
+  .notif-bar:active { transform: scale(.98); }
+  .notif-icon { font-size: 20px; flex-shrink:0; }
+  .notif-text { flex:1; font-size: 12px; color: var(--text2); line-height: 1.4; }
+  .notif-text strong { color: var(--orange); }
+  .notif-close { font-size: 14px; color: var(--text3); }
+
+  /* ── Scrollable horizontal chips ── */
+  .chip-scroll { display:flex; gap:8px; padding: 0 16px 14px; overflow-x:auto; scrollbar-width:none; }
+  .chip-scroll::-webkit-scrollbar { display:none; }
+
+  /* Navigation screen hint */
+  .nav-hint {
+    font-size: 10px; color: var(--text3); text-align:center;
+    padding: 4px 0 2px; letter-spacing:.5px;
+  }
+
+  /* ── Prototype nav (outside phone) ── */
+  .proto-nav {
+    display:flex; gap:6px; flex-wrap:wrap; justify-content:center;
+    max-width: 500px;
+    padding: 16px 12px 0;
+  }
+  .pnav-btn {
+    padding: 6px 12px; border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text2); font-size: 11px; font-weight: 500;
+    cursor: pointer; transition: all .15s;
+    font-family: var(--dm);
+  }
+  .pnav-btn:hover { border-color: var(--orange); color: var(--orange); }
+  .pnav-btn.f2:hover { border-color: var(--blue); color: var(--blue); }
+  .pnav-btn.current { background: var(--orange)22; border-color: var(--orange); color: var(--orange); }
+  .pnav-btn.f2.current { background: var(--blue)22; border-color: var(--blue); color: var(--blue); }
+
+  .screen-counter {
+    font-size: 11px; color: var(--text3); text-align:center; margin-top:6px;
+  }
+
+  /* ── Embed mode: hides desktop chrome, exposes raw app screens ── */
+  body.embed-mode {
+    padding: 0;
+    background: var(--bg);
+    display: block;
+    align-items: unset;
+    min-height: 100vh;
+  }
+  body.embed-mode .desktop-bar { display: none !important; }
+  body.embed-mode > div[style*="display:flex"] {
+    display: block !important;
+    padding: 0 !important;
+    gap: 0 !important;
+  }
+  body.embed-mode .phone-wrap {
+    width: 100% !important;
+  }
+  body.embed-mode .phone-frame {
+    width: 100% !important;
+    height: 100vh !important;
+    border-radius: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+  /* Hide the side screen navigator panel in embed mode */
+  body.embed-mode > div[style*="display:flex"] > div:not(.phone-wrap) {
+    display: none !important;
+  }
+  /* Hide feature tabs strip in embed mode */
+  body.embed-mode .ftab { display: none !important; }
+</style>
+</head>
+<body>
+<script>
+  // Embed mode: activated when loaded with ?embed=true (e.g. inside an iframe)
+  (function() {
+    if (new URLSearchParams(window.location.search).get('embed') === 'true') {
+      document.body.classList.add('embed-mode');
+    }
+  })();
+</script>
+
+<div class="desktop-bar">
+  <div>
+    <h1>VitaFit Prototype</h1>
+    <p>Mobile UI · All 10 screens · PRD v1.0</p>
+  </div>
+  <div class="feature-tabs">
+    <div class="ftab active-f1" onclick="switchFeature(1)">Feature 1 — FitStreak</div>
+    <div class="ftab" id="f2tab" onclick="switchFeature(2)">Feature 2 — Instructor Connect</div>
+  </div>
+</div>
+
+<div style="display:flex; gap:32px; align-items:flex-start; justify-content:center; flex-wrap:wrap; padding: 0 20px;">
+
+  <!-- Phone -->
+  <div class="phone-wrap">
+    <div class="phone-frame" id="phone">
+
+      <!-- ══════════════════════════════════════════ -->
+      <!-- SCREEN: Home Dashboard (F1)               -->
+      <!-- ══════════════════════════════════════════ -->
+      <div class="screen active" id="s-home">
+        <div class="status-bar">
+          <span style="font-size:13px;">9:41</span>
+          <div class="status-icons">
+            <div class="signal-bar">
+              <span style="height:5px;"></span><span style="height:8px;"></span>
+              <span style="height:11px;"></span><span style="height:14px;"></span>
+            </div>
+            <span style="font-size:11px;">WiFi</span>
+            <span style="font-size:11px;">▌▌▌</span>
+          </div>
+        </div>
+
+        <div style="padding:8px 16px 14px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <div style="font-size:11px; color:var(--text3);">Good morning 👋</div>
+            <div style="font-family:var(--syne); font-size:20px; font-weight:800; color:var(--text);">Priya</div>
+          </div>
+          <div style="width:40px; height:40px; border-radius:12px; background:linear-gradient(135deg,var(--orange),var(--purple)); display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:800; color:#fff;">P</div>
+        </div>
+
+        <!-- Streak Widget -->
+        <div class="streak-widget">
+          <div class="streak-row">
+            <div>
+              <div style="font-size:12px; color:var(--orange2); font-weight:600; margin-bottom:4px;">CURRENT STREAK</div>
+              <div class="streak-number">12</div>
+              <div class="streak-label">Day Streak 🔥</div>
+            </div>
+            <div style="flex:1; display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
+              <div class="at-risk-badge">⚡ At Risk Today</div>
+              <div style="font-size:11px; color:var(--text3); text-align:right; line-height:1.4;">Complete a session<br>to keep it alive</div>
+            </div>
+          </div>
+          <div class="streak-days" style="margin-top:14px;">
+            <div class="day-dot done">M</div>
+            <div class="day-dot done">T</div>
+            <div class="day-dot done">W</div>
+            <div class="day-dot done">T</div>
+            <div class="day-dot done">F</div>
+            <div class="day-dot done">S</div>
+            <div class="day-dot today">S</div>
+          </div>
+        </div>
+
+        <!-- Notif bar -->
+        <div class="notif-bar" onclick="goTo('s-challenge-detail')">
+          <div class="notif-icon">🏆</div>
+          <div class="notif-text"><strong>30-Day Yoga Challenge</strong> starts tomorrow — 847 people joined</div>
+          <div class="notif-close">›</div>
+        </div>
+
+        <!-- Badges -->
+        <div class="section-pad">
+          <div class="section-title">Your Badges</div>
+          <div class="badge-row">
+            <div class="badge-item">
+              <div class="badge-circle earned">🏅</div>
+              <div class="badge-name">7-Day Streak</div>
+            </div>
+            <div class="badge-item">
+              <div class="badge-circle earned">⚡</div>
+              <div class="badge-name">First Class</div>
+            </div>
+            <div class="badge-item">
+              <div class="badge-circle earned">🧘</div>
+              <div class="badge-name">Yoga Master</div>
+            </div>
+            <div class="badge-item">
+              <div class="badge-circle locked">🔥<span class="lock-icon">🔒</span></div>
+              <div class="badge-name">14-Day Streak</div>
+            </div>
+            <div class="badge-item">
+              <div class="badge-circle locked">💎<span class="lock-icon">🔒</span></div>
+              <div class="badge-name">30-Day Club</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Featured challenge -->
+        <div class="section-pad">
+          <div class="section-title" style="display:flex;justify-content:space-between;">Featured Challenge <span style="color:var(--orange);text-transform:none;letter-spacing:0;font-size:11px;cursor:pointer;" onclick="goTo('s-challenges')">See all</span></div>
+          <div class="challenge-card" onclick="goTo('s-challenge-detail')">
+            <div class="challenge-card-accent"></div>
+            <div class="challenge-card-body">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                <div class="challenge-card-title">30-Day Yoga Challenge</div>
+                <div class="chip chip-orange">Starts Tomorrow</div>
+              </div>
+              <div class="challenge-card-meta" style="margin-top:6px;">
+                <span>🧘 20 sessions</span>
+                <span>📅 30 days</span>
+                <span>👥 847 joined</span>
+              </div>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:0%"></div></div>
+                <div class="progress-label"><span>0 / 20 sessions</span><span>Not started</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:80px;"></div>
+        <div class="tab-bar">
+          <div class="tab-item active">
+            <div class="tab-icon">🏠</div>
+            <div class="tab-label" style="color:var(--orange);">Home</div>
+            <div class="tab-dot"></div>
+          </div>
+          <div class="tab-item" onclick="goTo('s-challenges')">
+            <div class="tab-icon">🏆</div>
+            <div class="tab-label">Challenges</div>
+          </div>
+          <div class="tab-item">
+            <div class="tab-icon">▶</div>
+            <div class="tab-label">Classes</div>
+          </div>
+          <div class="tab-item">
+            <div class="tab-icon">👤</div>
+            <div class="tab-label">Profile</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════ -->
+      <!-- SCREEN: Challenge Discovery               -->
+      <!-- ══════════════════════════════════════════ -->
+      <div class="screen" id="s-challenges">
+        <div class="status-bar"><span style="font-size:13px;">9:41</span><div class="status-icons"><span style="font-size:11px;">▌▌▌</span></div></div>
+        <div class="nav-bar">
+          <div class="back-btn" onclick="goBack()">‹</div>
+          <div class="nav-title">Challenges</div>
+          <div class="nav-action">Filter</div>
+        </div>
+
+        <div class="chip-scroll">
+          <div class="chip chip-orange">All</div>
+          <div class="chip" style="background:var(--surface2);color:var(--text2);border:1px solid var(--border);">Yoga</div>
+          <div class="chip" style="background:var(--surface2);color:var(--text2);border:1px solid var(--border);">Zumba</div>
+          <div class="chip" style="background:var(--surface2);color:var(--text2);border:1px solid var(--border);">HIIT</div>
+          <div class="chip" style="background:var(--surface2);color:var(--text2);border:1px solid var(--border);">Dance</div>
+          <div class="chip" style="background:var(--surface2);color:var(--text2);border:1px solid var(--border);">Pilates</div>
+        </div>
+
+        <div class="section-pad">
+          <div class="section-title">Active Now</div>
+          <div class="challenge-card" onclick="goTo('s-challenge-detail')">
+            <div class="challenge-card-accent"></div>
+            <div class="challenge-card-body">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                <div class="challenge-card-title">30-Day Yoga Challenge</div>
+                <div class="chip chip-green">Active</div>
+              </div>
+              <div class="challenge-card-meta" style="margin-top:6px;">
+                <span>🧘 20 sessions</span><span>📅 14 days left</span><span>👥 1.2k</span>
+              </div>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:35%"></div></div>
+                <div class="progress-label"><span>7 / 20 sessions</span><span>35%</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="challenge-card" onclick="goTo('s-challenge-detail')">
+            <div style="height:4px;background:linear-gradient(90deg,#3b9eff,#60c8ff);"></div>
+            <div class="challenge-card-body">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                <div class="challenge-card-title">Zumba Fiesta — 15 Days</div>
+                <div class="chip chip-blue">Active</div>
+              </div>
+              <div class="challenge-card-meta" style="margin-top:6px;">
+                <span>💃 15 sessions</span><span>📅 8 days left</span><span>👥 634</span>
+              </div>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:50%;background:linear-gradient(90deg,var(--blue),var(--blue2));"></div></div>
+                <div class="progress-label"><span>8 / 15 sessions</span><span>50%</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-title" style="margin-top:8px;">Coming Up</div>
+          <div class="challenge-card" onclick="goTo('s-challenge-detail')">
+            <div style="height:4px;background:linear-gradient(90deg,var(--purple),#a78bfa);"></div>
+            <div class="challenge-card-body">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                <div class="challenge-card-title">HIIT Power Week</div>
+                <div class="chip chip-purple">Starts in 3 days</div>
+              </div>
+              <div class="challenge-card-meta" style="margin-top:6px;">
+                <span>🏋️ 7 sessions</span><span>📅 7 days</span><span>👥 312 joined</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:24px;"></div>
+        <div class="tab-bar">
+          <div class="tab-item" onclick="goTo('s-home')"><div class="tab-icon">🏠</div><div class="tab-label">Home</div></div>
+          <div class="tab-item active"><div class="tab-icon">🏆</div><div class="tab-label" style="color:var(--orange);">Challenges</div><div class="tab-dot"></div></div>
+          <div class="tab-item"><div class="tab-icon">▶</div><div class="tab-label">Classes</div></div>
+          <div class="tab-item"><div class="tab-icon">👤</div><div class="tab-label">Profile</div></div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════ -->
+      <!-- SCREEN: Challenge Detail + Leaderboard    -->
+      <!-- ══════════════════════════════════════════ -->
+      <div class="screen" id="s-challenge-detail">
+        <div class="status-bar"><span style="font-size:13px;">9:41</span><div class="status-icons"><span style="font-size:11px;">▌▌▌</span></div></div>
+        <div class="nav-bar">
+          <div class="back-btn" onclick="goBack()">‹</div>
+          <div class="nav-title">Challenge Detail</div>
+          <div style="font-size:18px;cursor:pointer;">⋯</div>
+        </div>
+
+        <!-- Hero -->
+        <div style="margin:0 16px 14px; padding:20px; background:linear-gradient(135deg,#1e0e02,#2a1504); border-radius:20px; border:1px solid var(--orange)33; position:relative; overflow:hidden;">
+          <div style="position:absolute;top:-20px;right:-20px;width:100px;height:100px;background:radial-gradient(circle,var(--orange)22 0%,transparent 70%);"></div>
+          <div class="chip chip-orange" style="margin-bottom:10px;">🔥 Live Challenge</div>
+          <div style="font-family:var(--syne);font-size:20px;font-weight:800;color:var(--text);margin-bottom:4px;">30-Day Yoga Challenge</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.5;">Complete 20 yoga sessions in 30 days. Any level welcome. Build your practice, build your streak.</div>
+        </div>
+
+        <!-- Goal stats -->
+        <div class="card" style="margin: 0 16px 12px;">
+          <div class="goal-ring">
+            <div class="ring-wrap"><div class="ring-num">20</div><div class="ring-label">Sessions Goal</div></div>
+            <div class="ring-sep"></div>
+            <div class="ring-wrap"><div class="ring-num">14</div><div class="ring-label">Days Left</div></div>
+            <div class="ring-sep"></div>
+            <div class="ring-wrap"><div class="ring-num" style="color:var(--green);">7</div><div class="ring-label">Your Progress</div></div>
+          </div>
+          <div style="padding: 0 14px 14px;">
+            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:35%; height:6px;"></div></div>
+            <div class="progress-label"><span style="font-size:11px;color:var(--text2);">7 of 20 sessions complete</span><span style="color:var(--orange);">35%</span></div>
+          </div>
+        </div>
+
+        <!-- Participants -->
+        <div class="participants-row">
+          <div class="avatar-stack">
+            <span style="background:#e74c3c;">A</span>
+            <span style="background:#3498db;">M</span>
+            <span style="background:#2ecc71;">S</span>
+            <span style="background:#9b59b6;">K</span>
+            <span style="background:#f39c12;">R</span>
+          </div>
+          <div class="participants-text">+1,195 participants joined</div>
+          <div class="chip chip-green" style="margin-left:auto;">👑 You're top 10%</div>
+        </div>
+
+        <!-- Leaderboard preview -->
+        <div class="section-pad">
+          <div class="section-title">Leaderboard</div>
+          <div class="card" style="margin:0;">
+            <div class="lb-row"><div class="lb-rank gold">1</div><div class="lb-avatar" style="background:linear-gradient(135deg,#ffd700,#ff8c00);color:#fff;">A</div><div class="lb-name">Ananya S.</div><div class="lb-score">18</div></div>
+            <div class="lb-row"><div class="lb-rank silver">2</div><div class="lb-avatar" style="background:linear-gradient(135deg,#a0c4ff,#3b9eff);color:#fff;">M</div><div class="lb-name">Mihir R.</div><div class="lb-score">16</div></div>
+            <div class="lb-row"><div class="lb-rank bronze">3</div><div class="lb-avatar" style="background:linear-gradient(135deg,#cd7f32,#a0522d);color:#fff;">S</div><div class="lb-name">Sunita K.</div><div class="lb-score">15</div></div>
+            <div class="lb-row me"><div class="lb-rank me-rank">8</div><div class="lb-avatar" style="background:linear-gradient(135deg,var(--orange),var(--purple));color:#fff;">P</div><div class="lb-name">Priya (You)</div><div class="lb-score">7</div></div>
+          </div>
+        </div>
+
+        <button class="big-cta cta-orange" style="margin-top:14px;" onclick="goTo('s-session-select')">Start a Session →</button>
+        <button class="big-cta cta-outline" onclick="goBack()">← Back to Challenges</button>
+        <div style="height:16px;"></div>
+      </div>
+
+      <!-- ══════════════════════════════════════════ -->
+      <!-- SCREEN: Session Selection                 -->
+      <!-- ══════════════════════════════════════════ -->
+      <div class="screen" id="s-session-select">
+        <div class="status-bar"><span style="font-size:13px;">9:41</span><div class="status-icons"><span style="font-size:11px;">▌▌▌</span></div></div>
+        <div class="nav-bar">
+          <div class="back-btn" onclick="goBack()">‹</div>
+          <div class="nav-title">Pick Your Session</div>
+        </div>
+
+        <div style="padding:4px 16px 12px;">
+          <div style="font-size:12px; color:var(--text3);">Only qualifying yoga sessions shown</div>
+        </div>
+
+        <div class="section-pad">
+          <div class="section-title">Qualifying for: 30-Day Yoga Challenge</div>
+        </div>
+
+        <div class="card" style="margin:0 16px;">
+          <div class="session-item" onclick="goTo('s-session-complete')">
+            <div class="session-thumb" style="background:linear-gradient(135deg,#1a2a1a,#0e1e0e);font-size:24px;">🧘</div>
+            <div class="session-info">
+              <div class="session-title">Morning Flow Yoga</div>
+              <div class="session-meta"><span>⏱ 30 min</span><span>📶 Beginner</span></div>
+            </div>
+            <div class="session-arrow">›</div>
+          </div>
+          <div class="session-item" onclick="goTo('s-session-complete')">
+            <div class="session-thumb" style="background:linear-gradient(135deg,#1e1428,#12091e);font-size:24px;">🌙</div>
+            <div class="session-info">
+              <div class="session-title">Evening Wind-Down</div>
+              <div class="session-meta"><span>⏱ 20 min</span><span>📶 All levels</span></div>
+            </div>
+            <div class="session-arrow">›</div>
+          </div>
+          <div class="session-item" onclick="goTo('s-session-complete')">
+            <div class="session-thumb" style="background:linear-gradient(135deg,#1e1a0a,#14120a);font-size:24px;">🌞</div>
+            <div class="session-info">
+              <div class="session-title">Power Vinyasa Flow</div>
+              <div class="session-meta"><span>⏱ 45 min</span><span>📶 Intermediate</span></div>
+            </div>
+            <div class="session-arrow">›</div>
+          </div>
+          <div class="session-item" onclick="goTo('s-session-complete')">
+            <div class="session-thumb" style="background:linear-gradient(135deg,#0a1e1e,#061414);font-size:24px;">🌊</div>
+            <div class="session-info">
+              <div class="session-title">Yin Yoga Deep Stretch</div>
+              <div class="session-meta"><span>⏱ 50 min</span><span>📶 Intermediate</span></div>
+            </div>
+            <div class="session-arrow">›</div>
+          </div>
+        </div>
+        <div style="height:24px;"></div>
+      </div>
+
+      <!-- ══════════════════════════════════════════ -->
+      <!-- SCREEN: Session Complete + Badge          -->
+      <!-- ══════════════════════════════════════════ -->
+      <div class="screen" id="s-session-complete">
+        <div class="status-bar"><span style="font-size:13px;">9:41</span><div class="status-icons"><span style="font-size:11px;">▌▌▌</span></div></div>
+
+        <div class="milestone-bg">
+          <div class="confetti-area">🎉</div>
+          <div class="milestone-title">Session Complete!</div>
+          <div class="milestone-sub" style="color:var(--text2);">Morning Flow Yoga · 30 min</div>
+
+          <!-- Streak update -->
+          <div style="background:linear-gradient(135deg,#1e0e02,#2a1504);border:1.5px solid var(--orange)55;border-radius:20px;padding:18px 24px;width:100%;margin-bottom:16px;text-align:center;">
+            <div style="font-size:11px;color:var(--orange2);font-weight:700;letter-spacing:1px;margin-bottom:4px;">STREAK UPDATED</div>
+            <div style="font-family:var(--syne);font-size:52px;font-weight:800;color:var(--orange);line-height:1;">13</div>
+            <div style="font-size:13px;color:var(--orange2);">Day Streak 🔥 Keep going!</div>
+          </div>
+
+          <!-- Challenge progress -->
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;width:100%;margin-bottom:16px;">
+            <div style="font-size:11px;color:var(--text3);font-weight:600;letter-spacing:1px;margin-bottom:8px;">CHALLENGE PROGRESS</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+              <div style="font-size:13px;color:var(--text);">30-Day Yoga Challenge</div>
+              <div style="font-family:var(--syne);font-size:16px;font-weight:800;color:var(--orange);">8/20</div>
+            </div>
+            <div class="progress-bar-bg" style="height:6px;"><div class="progress-bar-fill" style="width:40%;"></div></div>
+            <div style="font-size:11px;color:var(--text3);margin-top:6px;">You moved to rank #6 on the leaderboard 🚀</div>
+          </div>
+
+          <!-- Badge earned -->
+          <div style="background:linear-gradient(135deg,#0a2a1a,#061e10);border:1.5px solid var(--green)44;border-radius:18px;padding:18px;width:100%;margin-bottom:16px;">
+            <div style="font-size:11px;color:var(--green);font-weight:700;letter-spacing:1px;margin-bottom:10px;">BADGE UNLOCKED 🏅</div>
+            <div style="display:flex;align-items:center;gap:14px;">
+              <div class="big-badge" style="width:60px;height:60px;border-radius:16px;font-size:28px;margin:0;flex-shrink:0;">🔥</div>
+              <div>
+                <div style="font-family:var(--syne);font-size:16px;font-weight:800;color:var(--text);">Week Warrior</div>
+                <div style="font-size:11px;color:var(--text2);margin-top:3px;">Complete 5 sessions in a week</div>
+              </div>
+            </div>
+          </div>
+
+          <button class="big-cta cta-orange" style="width:100%; margin:0 0 10px;" onclick="goTo('s-home')">Back to Home 🏠</button>
+          <button class="big-cta cta-outline" style="width:100%;margin:0;" onclick="goTo('s-session-select')">Do Another Session</button>
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════════ -->
+      <!-- FEATURE 2 SCREENS                           -->
+      <!-- ════════════════════════════════════════════ -->
+
+      <!-- SCREEN: Class Detail (F2 entry) -->
+      <div class="screen" id="s-class-detail">
+        <div class="status-bar"><span style="font-size:13px;">9:41</span><div class="status-icons"><span style="font-size:11px;">▌▌▌</span></div></div>
+        <div class="nav-bar">
+          <div class="back-btn" onclick="goBack()">‹</div>
+          <div class="nav-title">Class Detail</div>
+          <div style="font-size:18px;cursor:pointer;">⋯</div>
+        </div>
+
+        <!-- Class hero -->
+        <div style="margin:0 16px 14px; padding:20px; background:linear-gradient(135deg,#041018,#08182a); border-radius:20px; border:1px solid var(--blue)33; position:relative; overflow:hidden;">
+          <div style="position:absolute;top:-20px;right:-20px;width:100px;height:100px;background:radial-gradient(circle,var(--blue)22 0%,transparent 70%);"></div>
+          <div class="chip chip-blue" style="margin-bottom:10px;">🧘 Yoga · 45 min</div>
+          <div style="font-family:var(--syne);font-size:20px;font-weight:800;color:var(--text);margin-bottom:4px;">Power Vinyasa Flow</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:14px;">Build strength and flexibility with this dynamic flow. Connect breath to movement across 45 energizing minutes.</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <div class="chip" style="background:var(--surface2);color:var(--text2);border:1px solid var(--border);">⭐ 4.9 (2.3k)</div>
+            <div class="chip" style="background:var(--surface2);color:var(--text2);border:1px solid var(--border);">📶 Intermediate</div>
+          </div>
+        </div>
+
+        <!-- Instructor preview -->
+        <div class="card" style="margin:0 16px 12px; cursor:pointer;" onclick="goTo('s-instructor-profile')">
+          <div style="padding:14px 16px; display:flex; align-items:center; gap:12px;">
+            <div class="instructor-avatar" style="width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,var(--blue),var(--purple));font-size:20px;font-weight:800;color:#fff;display:flex;align-items:center;justify-content:center;">
+              N
+              <div class="online-dot"></div>
+            </div>
+            <div style="flex:1;">
+              <div style="font-size:14px;font-weight:700;color:var(--text);">Nisha Mehta</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:2px;">Yoga & Mindfulness · 8 yrs</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+              <div class="chip chip-blue" style="font-size:10px;">View Profile →</div>
+              <div style="font-size:10px;color:var(--text3);">12.4k followers</div>
+            </div>
+          </div>
+          <div style="padding:0 16px 14px; border-top:1px solid var(--border);">
+            <div style="font-size:12px;color:var(--text3);">
+              <span style="color:var(--blue2);">Follow Nisha</span> to get notified about new classes, milestone shoutouts, and join her community group.
+            </div>
+          </div>
+        </div>
+
+        <!-- Follow CTA (entry point for F2 flow) -->
+        <button class="big-cta cta-blue" onclick="goTo('s-instructor-profile')">👤 Follow Nisha Mehta</button>
+        <button class="big-cta cta-outline" onclick="goTo('s-session-select')">▶ Start This Class</button>
+        <div style="height:16px;"></div>
+      </div>
+
+      <!-- SCREEN: Instructor Profile -->
+      <div class="screen" id="s-instructor-profile">
+        <div class="status-bar"><span style="font-size:13px;">9:41</span><div class="status-icons"><span style="font-size:11px;">▌▌▌</span></div></div>
+        <div class="nav-bar">
+          <div class="back-btn" onclick="goBack()">‹</div>
+          <div class="nav-title">Instructor</div>
+          <div style="font-size:18px;cursor:pointer;">⋯</div>
+        </div>
+
+        <div class="instructor-header">
+          <div class="instructor-avatar" style="background:linear-gradient(135deg,var(--blue),var(--purple));">
+            N
+            <div class="online-dot"></div>
+          </div>
+          <div class="instructor-info">
+            <div class="instructor-name">Nisha Mehta</div>
+            <div class="instructor-title">Senior Yoga & Mindfulness Instructor</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:4px;">Mumbai, India · 8 years experience</div>
+          </div>
+        </div>
+
+        <div style="padding:14px 16px 0;">
+          <div class="instructor-stats">
+            <div class="inst-stat"><div class="inst-stat-num">12.4k</div><div class="inst-stat-label">Followers</div></div>
+            <div class="inst-stat"><div class="inst-stat-num">238</div><div class="inst-stat-label">Classes</div></div>
+            <div class="inst-stat"><div class="inst-stat-num">4.9</div><div class="inst-stat-label">Rating</div></div>
+            <div class="inst-stat"><div class="inst-stat-num">94%</div><div class="inst-stat-label">Return rate</div></div>
+          </div>
+        </div>
+
+        <div style="padding:12px 16px; font-size:13px; color:var(--text2); line-height:1.6;">
+          "I believe yoga is a conversation between your body and your breath. Every session with me is a step toward that stillness you've been looking for."
+        </div>
+
+        <button class="follow-btn unfollow" id="follow-btn" onclick="toggleFollow()">
+          <span id="follow-icon">+</span> <span id="follow-text">Follow Nisha</span>
+        </button>
+
+        <div class="divider"></div>
+
+        <!-- Community group CTA -->
+        <div class="section-pad">
+          <div style="background:linear-gradient(135deg,#041018,#08182a);border:1.5px solid var(--blue)44;border-radius:18px;padding:16px;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+              <div style="font-size:24px;">💬</div>
+              <div>
+                <div style="font-family:var(--syne);font-size:14px;font-weight:700;color:var(--text);">Nisha's Yoga Community</div>
+                <div style="font-size:11px;color:var(--text3);">843 members · Active daily</div>
+              </div>
+            </div>
+            <div style="font-size:12px;color:var(--text2);margin-bottom:12px;">Join Nisha's private group for class tips, challenge updates, and direct Q&As with Nisha every Sunday.</div>
+            <button class="big-cta cta-blue" style="width:100%;margin:0;padding:11px 0;font-size:13px;" onclick="goTo('s-group-feed')">Join Group →</button>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="section-pad" style="padding-bottom:8px;">
+          <div class="section-title">Upcoming Classes</div>
+        </div>
+        <div class="card" style="margin:0 16px 12px;">
+          <div class="session-item" onclick="goTo('s-session-select')">
+            <div class="session-thumb" style="background:linear-gradient(135deg,#041018,#08182a);font-size:24px;">🧘</div>
+            <div class="session-info">
+              <div class="session-title">Morning Vinyasa</div>
+              <div class="session-meta"><span>Today 7:00 AM</span><span>⏱ 45 min</span></div>
+            </div>
+            <div class="session-arrow">›</div>
+          </div>
+          <div class="session-item" onclick="goTo('s-session-select')">
+            <div class="session-thumb" style="background:linear-gradient(135deg,#1e1428,#12091e);font-size:24px;">🌙</div>
+            <div class="session-info">
+              <div class="session-title">Evening Yin Flow</div>
+              <div class="session-meta"><span>Today 7:30 PM</span><span>⏱ 60 min</span></div>
+            </div>
+            <div class="session-arrow">›</div>
+          </div>
+        </div>
+        <div style="height:24px;"></div>
+      </div>
+
+      <!-- SCREEN: Community Group Feed -->
+      <div class="screen" id="s-group-feed">
+        <div class="status-bar"><span style="font-size:13px;">9:41</span><div class="status-icons"><span style="font-size:11px;">▌▌▌</span></div></div>
+        <div class="nav-bar">
+          <div class="back-btn" onclick="goBack()">‹</div>
+          <div class="nav-title">Nisha's Yoga Community</div>
+          <div style="font-size:18px;cursor:pointer;">+</div>
+        </div>
+
+        <div style="padding:0 16px 10px; display:flex; align-items:center; gap:8px;">
+          <div class="chip chip-green">✓ Member</div>
+          <div style="font-size:11px;color:var(--text3);">843 members · 47 online now</div>
+        </div>
+
+        <div class="section-pad">
+          <!-- Instructor post -->
+          <div class="feed-post">
+            <div class="feed-post-header">
+              <div class="feed-avatar" style="background:linear-gradient(135deg,var(--blue),var(--purple));">N</div>
+              <div>
+                <div class="feed-author">Nisha Mehta <span style="background:var(--blue)22;color:var(--blue);font-size:9px;padding:1px 6px;border-radius:4px;margin-left:4px;">Instructor</span></div>
+                <div class="feed-time">2 hours ago</div>
+              </div>
+            </div>
+            <div class="feed-text">Good morning everyone! 🌞 Today's Morning Vinyasa at 7 AM is going to be a beautiful sequence — I've designed it around heart-openers. Perfect way to start your Tuesday. See you on the mat!</div>
+            <div style="background:var(--surface2);border-radius:10px;padding:10px 12px;margin-bottom:10px;display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="goTo('s-session-select')">
+              <div style="font-size:20px;">🧘</div>
+              <div>
+                <div style="font-size:12px;font-weight:600;color:var(--text);">Morning Vinyasa — Today 7:00 AM</div>
+                <div style="font-size:10px;color:var(--blue);">Join class →</div>
+              </div>
+            </div>
+            <div class="feed-reactions">
+              <div class="reaction-btn active">❤️ 142</div>
+              <div class="reaction-btn">🔥 88</div>
+              <div class="reaction-btn">💬 23</div>
+            </div>
+          </div>
+
+          <!-- Member post -->
+          <div class="feed-post">
+            <div class="feed-post-header">
+              <div class="feed-avatar" style="background:linear-gradient(135deg,#e74c3c,#c0392b);">A</div>
+              <div>
+                <div class="feed-author">Ananya S.</div>
+                <div class="feed-time">5 hours ago</div>
+              </div>
+            </div>
+            <div class="feed-text">Just hit my 30-session milestone with Nisha 🎉 The community here is what keeps me coming back. Thank you all! And that shoutout from Nisha yesterday made my entire week 💙</div>
+            <div class="feed-reactions">
+              <div class="reaction-btn">❤️ 64</div>
+              <div class="reaction-btn">🎉 31</div>
+              <div class="reaction-btn">💬 8</div>
+            </div>
+          </div>
+
+          <!-- Class announcement -->
+          <div class="feed-post">
+            <div class="feed-post-header">
+              <div class="feed-avatar" style="background:linear-gradient(135deg,var(--blue),var(--purple));">N</div>
+              <div>
+                <div class="feed-author">Nisha Mehta <span style="background:var(--blue)22;color:var(--blue);font-size:9px;padding:1px 6px;border-radius:4px;margin-left:4px;">Instructor</span></div>
+                <div class="feed-time">Yesterday</div>
+              </div>
+            </div>
+            <div class="feed-text">Sunday Q&A recap is now posted! I answered 18 questions about breath work, dealing with wrist pain, and how to build a home yoga space. Check the pinned post ⬆️</div>
+            <div class="feed-reactions">
+              <div class="reaction-btn">❤️ 98</div>
+              <div class="reaction-btn">🙏 45</div>
+              <div class="reaction-btn active">💬 31</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="big-cta cta-blue" style="margin-top:4px;" onclick="goTo('s-milestone')">See My Milestone →</button>
+        <div style="height:24px;"></div>
+      </div>
+
+      <!-- SCREEN: Milestone Hit (10th session) -->
+      <div class="screen" id="s-milestone">
+        <div class="status-bar"><span style="font-size:13px;">9:41</span><div class="status-icons"><span style="font-size:11px;">▌▌▌</span></div></div>
+
+        <div class="milestone-bg" style="background:radial-gradient(ellipse at 50% 30%, #041a0e 0%, var(--bg) 70%);">
+          <div class="confetti-area" style="padding:20px 0 6px;">🎊</div>
+          <div class="milestone-title">10 Sessions<br>with Nisha!</div>
+          <div class="milestone-sub">You've been showing up consistently. That's exactly what progress looks like.</div>
+
+          <div class="big-badge" style="box-shadow:0 0 40px var(--green)44;margin-bottom:20px;">🏅</div>
+
+          <!-- Shoutout notification -->
+          <div class="shoutout-banner" onclick="goTo('s-inbox')">
+            <div class="shoutout-bell">🔔</div>
+            <div>
+              <div class="shoutout-text">Nisha Mehta sent you a message!</div>
+              <div class="shoutout-from">Tap to read your personal shoutout →</div>
+            </div>
+          </div>
+
+          <div style="height:16px;"></div>
+          <button class="big-cta cta-blue" style="width:100%;margin:0 0 10px;" onclick="goTo('s-inbox')">Open Message 💌</button>
+          <button class="big-cta cta-outline" style="width:100%;margin:0;" onclick="goTo('s-group-feed')">← Back to Group</button>
+        </div>
+      </div>
+
+      <!-- SCREEN: Inbox — Instructor Message -->
+      <div class="screen" id="s-inbox">
+        <div class="status-bar"><span style="font-size:13px;">9:41</span><div class="status-icons"><span style="font-size:11px;">▌▌▌</span></div></div>
+        <div class="nav-bar">
+          <div class="back-btn" onclick="goBack()">‹</div>
+          <div class="nav-title">Message from Nisha</div>
+        </div>
+
+        <!-- Sender info -->
+        <div style="padding:4px 16px 14px; display:flex; align-items:center; gap:12px;">
+          <div style="width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;">N</div>
+          <div>
+            <div style="font-size:14px;font-weight:700;color:var(--text);">Nisha Mehta</div>
+            <div style="font-size:11px;color:var(--text3);">Instructor · Just now</div>
+          </div>
+          <div class="chip chip-blue" style="margin-left:auto;">Milestone Message</div>
+        </div>
+
+        <!-- Message card -->
+        <div class="inbox-msg">
+          <div class="inbox-from">📩 Personal message from your instructor</div>
+          <div class="inbox-body">
+            Hey <strong>Priya</strong>! 🌟<br><br>
+            I just wanted to take a moment to celebrate you — you've completed your <strong>10th session</strong> with me, and I notice your commitment every single time.<br><br>
+            The progress you've made in your practice is beautiful. Your breath is steadier, your transitions are cleaner, and most importantly — you <em>keep showing up</em>. That's the whole game.<br><br>
+            I'm hosting a special <strong>Breath & Balance</strong> masterclass this Sunday just for members like you who've hit this milestone. I'd love to see you there. 🙏
+          </div>
+          <button class="inbox-cta" onclick="goTo('s-session-select')">Join Sunday Masterclass →</button>
+        </div>
+
+        <!-- Other messages -->
+        <div class="section-pad" style="margin-top:4px;">
+          <div class="section-title">Your Inbox</div>
+        </div>
+        <div class="card" style="margin:0 16px;">
+          <div style="padding:12px 14px; display:flex; gap:10px; align-items:flex-start; border-bottom:1px solid var(--border); opacity:.6;">
+            <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0;">N</div>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--text);">5-Session Milestone 🎉</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:2px;">You've completed 5 sessions — I see you building ...</div>
+              <div style="font-size:10px;color:var(--text3);margin-top:4px;">3 weeks ago</div>
+            </div>
+          </div>
+          <div style="padding:12px 14px; display:flex; gap:10px; align-items:flex-start; opacity:.4;">
+            <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--orange),var(--orange2));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0;">V</div>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--text);">VitaFit Team</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:2px;">Welcome to the 30-Day Yoga Challenge! Here's ...</div>
+              <div style="font-size:10px;color:var(--text3);margin-top:4px;">1 month ago</div>
+            </div>
+          </div>
+        </div>
+        <div style="height:24px;"></div>
+      </div>
+
+    </div><!-- /phone-frame -->
+  </div><!-- /phone-wrap -->
+
+  <!-- Screen nav panel -->
+  <div style="display:flex;flex-direction:column;gap:12px;padding-top:8px;">
+    <div>
+      <div style="font-size:11px;font-weight:700;color:var(--orange);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Feature 1: FitStreak</div>
+      <div class="proto-nav" style="padding:0;flex-direction:column;align-items:flex-start;max-width:200px;">
+        <button class="pnav-btn current" id="btn-s-home" onclick="goTo('s-home')">1 · Home Dashboard</button>
+        <button class="pnav-btn" id="btn-s-challenges" onclick="goTo('s-challenges')">2 · Challenge Discovery</button>
+        <button class="pnav-btn" id="btn-s-challenge-detail" onclick="goTo('s-challenge-detail')">3 · Challenge Detail</button>
+        <button class="pnav-btn" id="btn-s-session-select" onclick="goTo('s-session-select')">4 · Session Selection</button>
+        <button class="pnav-btn" id="btn-s-session-complete" onclick="goTo('s-session-complete')">5 · Session Complete</button>
+      </div>
+    </div>
+    <div style="height:1px;background:var(--border);width:200px;"></div>
+    <div>
+      <div style="font-size:11px;font-weight:700;color:var(--blue);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Feature 2: Instructor Connect</div>
+      <div class="proto-nav" style="padding:0;flex-direction:column;align-items:flex-start;max-width:200px;">
+        <button class="pnav-btn f2" id="btn-s-class-detail" onclick="goTo('s-class-detail')">1 · Class Detail</button>
+        <button class="pnav-btn f2" id="btn-s-instructor-profile" onclick="goTo('s-instructor-profile')">2 · Instructor Profile</button>
+        <button class="pnav-btn f2" id="btn-s-group-feed" onclick="goTo('s-group-feed')">3 · Community Group</button>
+        <button class="pnav-btn f2" id="btn-s-milestone" onclick="goTo('s-milestone')">4 · Milestone Hit</button>
+        <button class="pnav-btn f2" id="btn-s-inbox" onclick="goTo('s-inbox')">5 · Inbox Message</button>
+      </div>
+    </div>
+    <div style="font-size:10px;color:var(--text3);max-width:200px;line-height:1.5;border-top:1px solid var(--border);padding-top:10px;">
+      Click screens to jump directly, or navigate inside the phone using buttons and back arrows.
+    </div>
+  </div>
+
+</div><!-- /flex wrap -->
+
+<script>
+  const history = [];
+  let currentScreen = 's-home';
+  let followingNisha = false;
+
+  const f2screens = ['s-class-detail','s-instructor-profile','s-group-feed','s-milestone','s-inbox'];
+
+  function updateNavButtons(id) {
+    document.querySelectorAll('.pnav-btn').forEach(b => {
+      b.classList.remove('current');
+    });
+    const btn = document.getElementById('btn-' + id);
+    if (btn) btn.classList.add('current');
+  }
+
+  function goTo(screenId) {
+    if (screenId === currentScreen) return;
+    const prev = document.getElementById(currentScreen);
+    const next = document.getElementById(screenId);
+    if (!next) return;
+
+    prev.classList.remove('active');
+    prev.classList.add('exit-left');
+    setTimeout(() => {
+      prev.classList.remove('exit-left');
+      prev.scrollTop = 0;
+    }, 380);
+
+    next.classList.add('active');
+    history.push(currentScreen);
+    currentScreen = screenId;
+    updateNavButtons(screenId);
+
+    // Update feature tabs
+    const isF2 = f2screens.includes(screenId);
+    document.querySelectorAll('.ftab')[0].className = 'ftab' + (isF2 ? '' : ' active-f1');
+    document.querySelectorAll('.ftab')[1].className = 'ftab' + (isF2 ? ' active-f2' : '');
+  }
+
+  function goBack() {
+    if (history.length === 0) return;
+    const prev = history.pop();
+    const current = document.getElementById(currentScreen);
+    const target = document.getElementById(prev);
+
+    current.classList.remove('active');
+    setTimeout(() => { current.scrollTop = 0; }, 380);
+
+    target.classList.add('active');
+    currentScreen = prev;
+    updateNavButtons(prev);
+  }
+
+  function switchFeature(n) {
+    if (n === 1) goTo('s-home');
+    else goTo('s-class-detail');
+  }
+
+  function toggleFollow() {
+    followingNisha = !followingNisha;
+    const btn = document.getElementById('follow-btn');
+    const icon = document.getElementById('follow-icon');
+    const text = document.getElementById('follow-text');
+    if (followingNisha) {
+      btn.className = 'follow-btn following';
+      icon.textContent = '✓';
+      text.textContent = 'Following Nisha';
+    } else {
+      btn.className = 'follow-btn unfollow';
+      icon.textContent = '+';
+      text.textContent = 'Follow Nisha';
+    }
+  }
+</script>
+</body>
+</html>

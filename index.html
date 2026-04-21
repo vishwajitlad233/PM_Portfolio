@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Vishwajit Lad - Portfolio</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        border: "hsl(240 3.7% 15.9%)",
+                        background: "hsl(240 10% 3.9%)",
+                        foreground: "hsl(0 0% 98%)",
+                        zinc: {
+                            950: '#09090b',
+                            900: '#18181b',
+                            800: '#27272a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: hsl(240 10% 3.9%); 
+            color: hsl(0 0% 98%); 
+        }
+    </style>
+</head>
+<body class="bg-background text-foreground antialiased overflow-x-hidden">
+
+<nav class="fixed top-0 w-full z-50 transition-all duration-300 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800">
+  <div class="max-w-6xl mx-auto px-6 lg:px-12 h-20 flex items-center justify-between">
+    <a href="#home" class="text-xl font-bold tracking-tight text-white hover:text-zinc-300 transition-colors">
+      VL<span class="text-zinc-500">.PM</span>
+    </a>
+    <div class="hidden md:flex items-center gap-8">
+      <a href="#about" class="text-sm font-medium text-zinc-400 hover:text-white transition-colors">About</a>
+      <a href="#experience" class="text-sm font-medium text-zinc-400 hover:text-white transition-colors">Experience</a>
+      <a href="#projects" class="text-sm font-medium text-zinc-400 hover:text-white transition-colors">Work</a>
+      <a href="#skills" class="text-sm font-medium text-zinc-400 hover:text-white transition-colors">Skills</a>
+      <a href="#contact" class="inline-flex items-center justify-center text-sm font-medium h-10 px-4 py-2 border border-zinc-700 bg-transparent text-white hover:bg-zinc-900 rounded-full transition-colors">Get In Touch</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section id="home" class="relative min-h-screen flex items-center pt-32 pb-16 px-4 sm:px-6 md:px-12 lg:px-24 overflow-hidden">
+  <div class="absolute top-0 left-1/4 w-[500px] h-[500px] bg-zinc-800/20 rounded-full blur-[120px] pointer-events-none"></div>
+  <div class="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-zinc-900/40 rounded-full blur-[100px] pointer-events-none"></div>
+
+  <div class="max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+    <div class="space-y-8">
+      <div class="inline-block px-4 py-1.5 rounded-full bg-zinc-900 border border-zinc-800 shadow-xl shadow-black/50">
+        <p class="text-zinc-400 font-mono text-sm uppercase tracking-wider font-semibold">Curious by Nature. Builder by Choice.</p>
+      </div>
+      <div class="space-y-2">
+        <h1 class="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight text-white drop-shadow-lg mb-4 md:mb-6">
+          Hi, I'm Vishwajit Lad.
+        </h1>
+        <div class="inline-flex flex-col text-zinc-400 drop-shadow-md font-medium max-w-full">
+          <span class="text-[1.3rem] sm:text-2xl md:text-[2.65rem] leading-tight md:leading-none tracking-tight whitespace-normal md:whitespace-nowrap">Associate Product Manager</span>
+          <div class="text-[0.9rem] sm:text-base md:text-[1.53rem] leading-normal md:leading-none mt-1.5 sm:mt-2 md:mt-3 text-zinc-500 w-full flex flex-wrap md:justify-between font-light tracking-wide gap-2">
+            <span>Delivering AI-Driven Product Innovation</span>
+          </div>
+        </div>
+      </div>
+      <p class="text-lg md:text-xl text-zinc-400 max-w-lg leading-relaxed">
+        From pharma to frontier. I use curiosity, AI tools, and product thinking to build human-centered experiences from the ground up.
+      </p>
+      <div class="flex flex-wrap items-center gap-5 pt-4">
+        <a href="#projects" class="inline-flex items-center justify-center bg-white text-black hover:bg-zinc-200 hover:scale-105 transition-transform rounded-full px-8 py-3 shadow-[0_0_20px_rgba(255,255,255,0.1)] font-medium">
+          View My Work <i data-lucide="arrow-right" class="ml-2 h-4 w-4"></i>
+        </a>
+        <a href="https://customer-assets.emergentagent.com/job_pm-portfolio-34/artifacts/xxkljaom_VishwajitLad_PM_Resume.pdf" target="_blank" class="inline-flex items-center justify-center border border-zinc-700 bg-zinc-900/50 backdrop-blur-sm text-white hover:bg-zinc-800 hover:scale-105 transition-all shadow-xl rounded-full px-8 py-3 font-medium">
+          <i data-lucide="file-text" class="mr-2 h-4 w-4"></i> Resume
+        </a>
+      </div>
+      <div class="flex items-center gap-8 pt-8">
+        <a href="mailto:vishwajitlad233@gmail.com" class="text-zinc-500 hover:text-white hover:-translate-y-1 transition-all"><i class="fa-solid fa-envelope text-3xl"></i></a>
+        <a href="https://www.linkedin.com/in/vishwajitlad/" target="_blank" class="text-zinc-500 hover:text-[#0A66C2] hover:-translate-y-1 transition-all"><i class="fa-brands fa-linkedin text-3xl"></i></a>
+        <a href="https://www.instagram.com/vishwajit_lad_?igsh=bzhmeXh5ZTNramMx" target="_blank" class="text-zinc-500 hover:text-[#E1306C] hover:-translate-y-1 transition-all"><i class="fa-brands fa-instagram text-3xl"></i></a>
+        <a href="https://x.com/VishwajitLad" target="_blank" class="text-zinc-500 hover:text-white hover:-translate-y-1 transition-all"><i class="fa-brands fa-x-twitter text-3xl"></i></a>
+        <a href="https://github.com/vishwajitlad233" target="_blank" class="text-zinc-500 hover:text-white hover:-translate-y-1 transition-all"><i class="fa-brands fa-github text-3xl"></i></a>
+      </div>
+    </div>
+    <div class="flex justify-center lg:justify-end">
+      <div class="relative w-full max-w-[280px] sm:max-w-xs md:max-w-md aspect-square md:aspect-[4/5] rounded-3xl overflow-hidden group border border-zinc-800 bg-zinc-900 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+        <img src="https://customer-assets.emergentagent.com/job_pm-portfolio-34/artifacts/9xxtr7z2_IMG-20250825-WA0023.jpg" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Vishwajit Lad">
+        <div class="absolute inset-0 shadow-[inset_0_0_40px_rgba(0,0,0,0.8)] pointer-events-none z-10"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- About -->
+<section id="about" class="py-20 md:py-32 px-4 sm:px-6 md:px-12 lg:px-24 bg-zinc-950 relative border-t border-zinc-900">
+  <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent opacity-50"></div>
+  <div class="max-w-6xl mx-auto w-full">
+    <div class="flex items-center gap-6 mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold text-white tracking-tight drop-shadow-md">About Me</h2>
+      <div class="h-px bg-zinc-800 flex-1 shadow-[0_1px_2px_rgba(0,0,0,0.5)]"></div>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
+      <div class="lg:col-span-4 flex justify-center">
+        <div class="w-full max-w-[240px] sm:max-w-[280px] md:max-w-sm lg:max-w-none aspect-[3/4] rounded-2xl border border-zinc-800 bg-zinc-900 shadow-[0_20px_40px_rgba(0,0,0,0.4)] relative overflow-hidden group">
+          <img src="https://customer-assets.emergentagent.com/job_pm-portfolio-34/artifacts/9xxtr7z2_IMG-20250825-WA0023.jpg" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+          <div class="absolute inset-0 bg-gradient-to-bl from-zinc-900/40 to-transparent opacity-50 pointer-events-none"></div>
+          <div class="absolute inset-0 shadow-[inset_0_0_30px_rgba(0,0,0,0.8)] pointer-events-none z-10"></div>
+        </div>
+      </div>
+      <div class="lg:col-span-8 flex flex-col justify-center">
+        <div class="space-y-6 text-zinc-300 leading-relaxed text-lg font-light">
+          <p>Hey, I'm Vishwajit — an Associate Product Manager based out of Mumbai, India.</p>
+          <p>I started my career in pharmaceutical marketing at Lupin, where I spent over 11 months decoding the needs of doctors, patients, and market segments in one of the most regulated industries in the world.</p>
+          <p>But curiosity kept pulling me toward something bigger. I wanted to build things — not just market them. That's when I made a deliberate pivot into Product Management through Airtribe's rigorous PM cohort...</p>
+          <p>Today, I blend the structured thinking of pharma with the velocity of AI-native tooling — using ChatGPT, Claude, Gemini, Grok, NotebookLM, and more to research, prototype, and ship fast.</p>
+        </div>
+        <div class="mt-16 space-y-8">
+          <h3 class="text-xl font-bold text-white tracking-wide flex items-center gap-3"><span class="w-8 h-px bg-zinc-700"></span>Product Philosophy</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-zinc-900/60 border border-zinc-800 rounded-xl shadow-xl p-6 hover:-translate-y-1 transition-all backdrop-blur-sm">
+              <h4 class="text-white font-semibold mb-3">Extreme Curiosity</h4>
+              <p class="text-zinc-400 text-sm leading-relaxed">Every decision starts with a question. I dig deep — into user pain, market dynamics, and tech stacks — before forming any opinion.</p>
+            </div>
+            <div class="bg-zinc-900/60 border border-zinc-800 rounded-xl shadow-xl p-6 hover:-translate-y-1 transition-all backdrop-blur-sm">
+              <h4 class="text-white font-semibold mb-3">Empathy First</h4>
+              <p class="text-zinc-400 text-sm leading-relaxed">Whether it's a doctor at Lupin or a user on a digital product — I firmly believe technology must serve people, not the other way around.</p>
+            </div>
+            <div class="bg-zinc-900/60 border border-zinc-800 rounded-xl shadow-xl p-6 hover:-translate-y-1 transition-all backdrop-blur-sm">
+              <h4 class="text-white font-semibold mb-3">Bias for Action</h4>
+              <p class="text-zinc-400 text-sm leading-relaxed">In AI, the landscape changes weekly. I prioritize building fast, learning from real signals, and iterating ruthlessly.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Experience -->
+<section id="experience" class="py-20 md:py-32 px-4 sm:px-6 md:px-12 lg:px-24 bg-zinc-950 relative border-t border-zinc-900">
+  <div class="max-w-4xl mx-auto w-full">
+    <div class="flex items-center gap-6 mb-20">
+      <h2 class="text-3xl md:text-4xl font-bold text-white tracking-tight drop-shadow-md">Experience</h2>
+      <div class="h-px bg-zinc-800 flex-1"></div>
+    </div>
+    <div class="space-y-20">
+      <div class="relative group">
+        <div class="hidden md:block absolute left-[-45px] top-2 w-3 h-3 rounded-full bg-zinc-700 group-hover:bg-white transition-all"></div>
+        <div class="hidden md:block absolute left-[-40px] top-6 w-px h-[calc(100%+60px)] bg-zinc-800"></div>
+        <div class="md:grid md:grid-cols-12 md:gap-8 items-start">
+          <div class="md:col-span-3 mb-4 md:mb-0 pt-1">
+            <p class="text-zinc-500 font-mono text-sm tracking-wide bg-zinc-900/50 inline-block px-3 py-1 rounded-md border border-zinc-800/50 shadow-inner">2025</p>
+          </div>
+          <div class="md:col-span-9 space-y-5 bg-zinc-900/20 p-6 md:p-8 rounded-2xl border border-transparent hover:border-zinc-800/50 hover:bg-zinc-900/40 transition-colors">
+            <div>
+              <h3 class="text-2xl font-bold text-white drop-shadow-sm">Product Management Specialist</h3>
+              <p class="text-lg text-zinc-400 mt-1 font-medium">Airtribe</p>
+            </div>
+            <p class="text-zinc-500 font-medium tracking-wide text-sm uppercase">PM Cohort — 0→1 Product Thinking</p>
+            <p class="text-zinc-400 leading-relaxed text-base font-light">Completed a rigorous product management training program focused on modern PM frameworks. Studied Jobs-to-be-done (JTBD), growth thinking, product strategy, user research, and 0-to-1 product development.</p>
+            <div class="flex flex-wrap gap-2 pt-2">
+              <span class="inline-flex rounded-full border border-zinc-700/50 px-3 py-1 text-xs font-medium bg-zinc-800/50 text-zinc-300 backdrop-blur-sm">JTBD Framework</span>
+              <span class="inline-flex rounded-full border border-zinc-700/50 px-3 py-1 text-xs font-medium bg-zinc-800/50 text-zinc-300 backdrop-blur-sm">Growth Strategy</span>
+              <span class="inline-flex rounded-full border border-zinc-700/50 px-3 py-1 text-xs font-medium bg-zinc-800/50 text-zinc-300 backdrop-blur-sm">Product Roadmaps</span>
+              <span class="inline-flex rounded-full border border-zinc-700/50 px-3 py-1 text-xs font-medium bg-zinc-800/50 text-zinc-300 backdrop-blur-sm">PRD Writing</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="relative group">
+        <div class="hidden md:block absolute left-[-45px] top-2 w-3 h-3 rounded-full bg-zinc-700 group-hover:bg-white transition-all z-10"></div>
+        <div class="md:grid md:grid-cols-12 md:gap-8 items-start">
+          <div class="md:col-span-3 mb-4 md:mb-0 pt-1">
+            <p class="text-zinc-500 font-mono text-sm tracking-wide bg-zinc-900/50 inline-block px-3 py-1 rounded-md border border-zinc-800/50 shadow-inner">Jan 2025 – Nov 2025</p>
+          </div>
+          <div class="md:col-span-9 space-y-5 bg-zinc-900/20 p-6 md:p-8 rounded-2xl border border-transparent hover:border-zinc-800/50 hover:bg-zinc-900/40 transition-colors">
+            <div>
+              <h3 class="text-2xl font-bold text-white drop-shadow-sm">Marketing Executive</h3>
+              <p class="text-lg text-zinc-400 mt-1 font-medium">Lupin Pharmaceuticals</p>
+            </div>
+            <p class="text-zinc-500 font-medium tracking-wide text-sm uppercase">Pharmaceutical Marketing & Market Research</p>
+            <p class="text-zinc-400 leading-relaxed text-base font-light">Worked in one of India's leading pharma companies, developing a deep understanding of regulated industries, doctor-patient dynamics, and how marketing strategy must adapt to strict compliance constraints.</p>
+            <div class="flex flex-wrap gap-2 pt-2">
+              <span class="inline-flex rounded-full border border-zinc-700/50 px-3 py-1 text-xs font-medium bg-zinc-800/50 text-zinc-300 backdrop-blur-sm">Market Research</span>
+              <span class="inline-flex rounded-full border border-zinc-700/50 px-3 py-1 text-xs font-medium bg-zinc-800/50 text-zinc-300 backdrop-blur-sm">User Insights</span>
+              <span class="inline-flex rounded-full border border-zinc-700/50 px-3 py-1 text-xs font-medium bg-zinc-800/50 text-zinc-300 backdrop-blur-sm">Campaign Execution</span>
+              <span class="inline-flex rounded-full border border-zinc-700/50 px-3 py-1 text-xs font-medium bg-zinc-800/50 text-zinc-300 backdrop-blur-sm">B2C</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Projects -->
+<section id="projects" class="py-20 md:py-32 px-4 sm:px-6 md:px-12 lg:px-24 bg-zinc-950 relative border-t border-zinc-900">
+  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-zinc-900/30 rounded-full blur-[150px] pointer-events-none"></div>
+  <div class="max-w-6xl mx-auto w-full relative z-10">
+    <div class="flex items-center gap-6 mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold text-white tracking-tight drop-shadow-md">Selected Work</h2>
+      <div class="h-px bg-zinc-800 flex-1"></div>
+    </div>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-4xl mx-auto">
+      <!-- Project 1 -->
+      <div class="bg-zinc-900/60 border border-zinc-800 shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.8)] hover:-translate-y-2 transition-all duration-500 flex flex-col group overflow-hidden rounded-2xl backdrop-blur-sm">
+        <div class="w-full h-36 md:h-44 overflow-hidden relative">
+          <div class="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent z-10"></div>
+          <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="PM Prompt Architect">
+        </div>
+        <div class="pt-5 px-5 relative z-20 bg-zinc-900/90 flex-grow">
+          <h3 class="text-lg text-white group-hover:text-zinc-200 transition-colors font-bold tracking-tight mb-2">PM Prompt Architect</h3>
+          <p class="text-zinc-400 leading-relaxed font-light text-xs mb-4">A robust, interactive 5-layer prompt architecture designed specifically for Product Managers. Built to eliminate generic LLM outputs by translating vague requirements into precise, tool-specific AI instructions via a dynamic wizard flow.</p>
+          <div class="flex flex-wrap gap-3">
+            <a href="projects/pm_prompt_architect.html" target="_blank" class="inline-flex rounded-full bg-white text-black hover:bg-zinc-200 shadow-md px-3 py-1.5 text-xs font-medium transition-all">Open Case Study</a>
+          </div>
+        </div>
+        <div class="pt-4 px-5 pb-5 border-t border-zinc-800/50 mt-4 bg-zinc-900/90 relative z-20">
+          <div class="flex flex-wrap gap-2">
+            <span class="text-xs font-mono font-semibold tracking-wider text-zinc-500 uppercase bg-zinc-950/50 px-2 py-1 flex items-center justify-center rounded border text-[10px] leading-none border-zinc-800/50 shadow-inner">LLM Prompting</span>
+            <span class="text-xs font-mono font-semibold tracking-wider text-zinc-500 uppercase bg-zinc-950/50 px-2 py-1 flex items-center justify-center rounded border text-[10px] leading-none border-zinc-800/50 shadow-inner">Systems Thinking</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Project 2 -->
+      <div class="bg-zinc-900/60 border border-zinc-800 shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.8)] hover:-translate-y-2 transition-all duration-500 flex flex-col group overflow-hidden rounded-2xl backdrop-blur-sm">
+        <div class="w-full h-36 md:h-44 overflow-hidden relative">
+          <div class="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent z-10"></div>
+          <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Swiggy">
+        </div>
+        <div class="pt-5 px-5 relative z-20 bg-zinc-900/90 flex-grow">
+          <h3 class="text-lg text-white group-hover:text-zinc-200 transition-colors font-bold tracking-tight mb-2">Swiggy Group Order</h3>
+          <p class="text-zinc-400 leading-relaxed font-light text-xs mb-4">A full product case study for a collaborative cart + Dutch split payment feature on Swiggy. Includes a complete PRD with user personas, pain-point analysis, success metrics, and an interactive iPhone 16 Pro prototype.</p>
+          <div class="flex flex-wrap gap-3">
+            <a href="projects/swiggy_case_study.html" target="_blank" class="inline-flex rounded-full bg-white text-black hover:bg-zinc-200 shadow-md px-3 py-1.5 text-xs font-medium transition-all">View Case Study</a>
+            <a href="projects/swiggy_group_order_prd.html" target="_blank" class="inline-flex rounded-full border border-zinc-700 text-white hover:bg-zinc-800 px-3 py-1.5 text-xs font-medium transition-all">Read PRD</a>
+            <a href="projects/swiggy_group_prototype.html" target="_blank" class="inline-flex rounded-full border border-zinc-700/50 text-zinc-400 hover:text-white bg-zinc-900/50 px-3 py-1.5 text-xs font-medium transition-all">Live Prototype</a>
+          </div>
+        </div>
+        <div class="pt-4 px-5 pb-5 border-t border-zinc-800/50 mt-4 bg-zinc-900/90 relative z-20">
+          <div class="flex flex-wrap gap-2">
+            <span class="text-xs font-mono font-semibold tracking-wider text-zinc-500 uppercase bg-zinc-950/50 px-2 py-1 flex items-center justify-center rounded border text-[10px] leading-none border-zinc-800/50 shadow-inner">PRD</span>
+            <span class="text-xs font-mono font-semibold tracking-wider text-zinc-500 uppercase bg-zinc-950/50 px-2 py-1 flex items-center justify-center rounded border text-[10px] leading-none border-zinc-800/50 shadow-inner">Prototype</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project 3 -->
+      <div class="bg-zinc-900/60 border border-zinc-800 shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.8)] hover:-translate-y-2 transition-all duration-500 flex flex-col group overflow-hidden rounded-2xl backdrop-blur-sm">
+        <div class="w-full h-36 md:h-44 overflow-hidden relative">
+          <div class="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent z-10"></div>
+          <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="VitaFit">
+        </div>
+        <div class="pt-5 px-5 relative z-20 bg-zinc-900/90 flex-grow">
+          <h3 class="text-lg text-white group-hover:text-zinc-200 transition-colors font-bold tracking-tight mb-2">VitaFit — Fitness Habit App</h3>
+          <p class="text-zinc-400 leading-relaxed font-light text-xs mb-4">An end-to-end product design and PRD for a streak-based fitness app targeting inconsistency. Explores gamification, habit hooks, and competitive social features.</p>
+          <div class="flex flex-wrap gap-3">
+            <a href="projects/vitafit_case_study.html" target="_blank" class="inline-flex rounded-full bg-white text-black hover:bg-zinc-200 shadow-md px-3 py-1.5 text-xs font-medium transition-all">View Case Study</a>
+            <a href="projects/vitafit_prototype.html" target="_blank" class="inline-flex rounded-full border border-zinc-700/50 text-zinc-400 hover:text-white bg-zinc-900/50 px-3 py-1.5 text-xs font-medium transition-all">Live Prototype</a>
+          </div>
+        </div>
+        <div class="pt-4 px-5 pb-5 border-t border-zinc-800/50 mt-4 bg-zinc-900/90 relative z-20">
+          <div class="flex flex-wrap gap-2">
+            <span class="text-xs font-mono font-semibold tracking-wider text-zinc-500 uppercase bg-zinc-950/50 px-2 py-1 flex items-center justify-center rounded border text-[10px] leading-none border-zinc-800/50 shadow-inner">0→1 Product</span>
+            <span class="text-xs font-mono font-semibold tracking-wider text-zinc-500 uppercase bg-zinc-950/50 px-2 py-1 flex items-center justify-center rounded border text-[10px] leading-none border-zinc-800/50 shadow-inner">PRD</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project 4 -->
+      <div class="bg-zinc-900/60 border border-zinc-800 shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.8)] hover:-translate-y-2 transition-all duration-500 flex flex-col group overflow-hidden rounded-2xl backdrop-blur-sm">
+        <div class="w-full h-36 md:h-44 overflow-hidden relative">
+          <div class="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent z-10"></div>
+          <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Zomato">
+        </div>
+        <div class="pt-5 px-5 relative z-20 bg-zinc-900/90 flex-grow">
+          <h3 class="text-lg text-white group-hover:text-zinc-200 transition-colors font-bold tracking-tight mb-2">Zomato Delivery Growth Strategy</h3>
+          <p class="text-zinc-400 leading-relaxed font-light text-xs mb-4">A strategic tear-down focused on increasing Zomato's active delivery fleet retention. Analyzes onboarding funnels, incentive structures, and proposes structured OKRs.</p>
+          <div class="flex flex-wrap gap-3">
+            <a href="projects/zomato_case_study.html" target="_blank" class="inline-flex rounded-full bg-white text-black hover:bg-zinc-200 shadow-md px-3 py-1.5 text-xs font-medium transition-all">View PM Brief</a>
+          </div>
+        </div>
+        <div class="pt-4 px-5 pb-5 border-t border-zinc-800/50 mt-4 bg-zinc-900/90 relative z-20">
+          <div class="flex flex-wrap gap-2">
+            <span class="text-xs font-mono font-semibold tracking-wider text-zinc-500 uppercase bg-zinc-950/50 px-2 py-1 flex items-center justify-center rounded border text-[10px] leading-none border-zinc-800/50 shadow-inner">OKRs</span>
+            <span class="text-xs font-mono font-semibold tracking-wider text-zinc-500 uppercase bg-zinc-950/50 px-2 py-1 flex items-center justify-center rounded border text-[10px] leading-none border-zinc-800/50 shadow-inner">Funnel Analysis</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Skills -->
+<section id="skills" class="py-20 md:py-32 px-4 sm:px-6 md:px-12 lg:px-24 bg-zinc-950 relative border-t border-zinc-900">
+  <div class="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-zinc-800/20 rounded-full blur-[120px] pointer-events-none"></div>
+  <div class="max-w-6xl mx-auto w-full relative z-10">
+    <div class="text-center mb-16 space-y-4">
+      <h2 class="text-3xl md:text-4xl font-bold text-white tracking-tight drop-shadow-md">Skills & Stack</h2>
+      <p class="text-zinc-400 max-w-2xl mx-auto text-lg font-light leading-relaxed">From high-level product strategy to deep-in-the-weeds technical implementation.</p>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-4xl mx-auto">
+      
+      <!-- Management -->
+      <div class="bg-zinc-900/40 p-8 md:p-10 rounded-3xl border border-zinc-800/50 shadow-[0_20px_40px_rgba(0,0,0,0.3)] backdrop-blur-md relative overflow-hidden group">
+        <div class="absolute inset-0 bg-gradient-to-br from-zinc-800/10 to-transparent opacity-50 z-0"></div>
+        <div class="relative z-10">
+          <div class="flex items-center gap-4 mb-10">
+            <div class="p-3 bg-zinc-800/50 rounded-xl shadow-inner text-cyan-400"><i data-lucide="layers" class="w-8 h-8"></i></div>
+            <h3 class="text-2xl font-bold text-white tracking-tight">Product Management</h3>
+          </div>
+          <div class="space-y-8">
+             <div class="space-y-3">
+               <div class="flex justify-between items-center text-sm font-medium"><span class="text-zinc-300">Product Strategy (JTBD)</span><span class="text-zinc-500 font-mono">88%</span></div>
+               <div class="h-1.5 w-full bg-zinc-800/80 rounded-full overflow-hidden shadow-inner"><div class="h-full bg-zinc-300 rounded-full shadow-[0_0_10px_rgba(255,255,255,0.5)]" style="width: 88%"></div></div>
+             </div>
+             <div class="space-y-3">
+               <div class="flex justify-between items-center text-sm font-medium"><span class="text-zinc-300">User Research & Empathy</span><span class="text-zinc-500 font-mono">85%</span></div>
+               <div class="h-1.5 w-full bg-zinc-800/80 rounded-full overflow-hidden shadow-inner"><div class="h-full bg-zinc-300 rounded-full shadow-[0_0_10px_rgba(255,255,255,0.5)]" style="width: 85%"></div></div>
+             </div>
+             <div class="space-y-3">
+               <div class="flex justify-between items-center text-sm font-medium"><span class="text-zinc-300">Growth Thinking & GTM</span><span class="text-zinc-500 font-mono">80%</span></div>
+               <div class="h-1.5 w-full bg-zinc-800/80 rounded-full overflow-hidden shadow-inner"><div class="h-full bg-zinc-300 rounded-full shadow-[0_0_10px_rgba(255,255,255,0.5)]" style="width: 80%"></div></div>
+             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tools -->
+      <div class="bg-zinc-900/40 p-8 md:p-10 rounded-3xl border border-zinc-800/50 shadow-[0_20px_40px_rgba(0,0,0,0.3)] backdrop-blur-md relative overflow-hidden group">
+        <div class="absolute inset-0 bg-gradient-to-tl from-zinc-800/10 to-transparent opacity-50 z-0"></div>
+        <div class="relative z-10 h-full flex flex-col">
+          <div class="flex items-center gap-4 mb-10">
+            <div class="p-3 bg-zinc-800/50 rounded-xl shadow-inner text-cyan-400"><i data-lucide="cpu" class="w-8 h-8"></i></div>
+            <h3 class="text-2xl font-bold text-white tracking-tight">AI Stack & Tools</h3>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 flex-grow content-start">
+             <div class="flex flex-col items-center justify-center p-6 bg-zinc-950/40 border border-zinc-800/50 rounded-2xl hover:bg-zinc-800/50 hover:border-zinc-700 hover:-translate-y-1 transition-all shadow-inner group/icon">
+                <svg viewBox="0 0 24 24" fill="currentColor" class="text-emerald-400 mb-3 h-8 w-8 drop-shadow-md group-hover/icon:scale-110 transition-transform duration-300"><path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z"></path></svg>
+                <span class="text-zinc-400 text-xs font-medium tracking-wide group-hover/icon:text-zinc-200 transition-colors text-center">ChatGPT</span>
+             </div>
+             
+             <div class="flex flex-col items-center justify-center p-6 bg-zinc-950/40 border border-zinc-800/50 rounded-2xl hover:bg-zinc-800/50 hover:border-zinc-700 hover:-translate-y-1 transition-all shadow-inner group/icon">
+                <svg viewBox="0 0 24 24" fill="currentColor" class="text-orange-200 mb-3 h-8 w-8 drop-shadow-md group-hover/icon:scale-110 transition-transform duration-300"><path d="M17.3041 3.541h-3.6718l6.696 16.918H24Zm-10.6082 0L0 20.459h3.7442l1.3693-3.5527h7.0052l1.3693 3.5528h3.7442L10.5363 3.5409Zm-.3712 10.2232 2.2914-5.9456 2.2914 5.9456Z"></path></svg>
+                <span class="text-zinc-400 text-xs font-medium tracking-wide group-hover/icon:text-zinc-200 transition-colors text-center">Claude</span>
+             </div>
+             
+             <div class="flex flex-col items-center justify-center p-6 bg-zinc-950/40 border border-zinc-800/50 rounded-2xl hover:bg-zinc-800/50 hover:border-zinc-700 hover:-translate-y-1 transition-all shadow-inner group/icon">
+                <svg viewBox="0 0 24 24" fill="currentColor" class="text-blue-400 mb-3 h-8 w-8 drop-shadow-md group-hover/icon:scale-110 transition-transform duration-300"><path d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81"></path></svg>
+                <span class="text-zinc-400 text-xs font-medium tracking-wide group-hover/icon:text-zinc-200 transition-colors text-center">Gemini</span>
+             </div>
+
+             <div class="flex flex-col items-center justify-center p-6 bg-zinc-950/40 border border-zinc-800/50 rounded-2xl hover:bg-zinc-800/50 hover:border-zinc-700 hover:-translate-y-1 transition-all shadow-inner group/icon">
+                <svg viewBox="0 0 24 24" fill="currentColor" class="text-emerald-500 mb-3 h-8 w-8 drop-shadow-md group-hover/icon:scale-110 transition-transform duration-300"><path d="M23.922 16.997C23.061 18.492 18.063 22.02 12 22.02 5.937 22.02.939 18.492.078 16.997A.641.641 0 0 1 0 16.741v-2.869a.883.883 0 0 1 .053-.22c.372-.935 1.347-2.292 2.605-2.656.167-.429.414-1.055.644-1.517a10.098 10.098 0 0 1-.052-1.086c0-1.331.282-2.499 1.132-3.368.397-.406.89-.717 1.474-.952C7.255 2.937 9.248 1.98 11.978 1.98c2.731 0 4.767.957 6.166 2.093.584.235 1.077.546 1.474.952.85.869 1.132 2.037 1.132 3.368 0 .368-.014.733-.052 1.086.23.462.477 1.088.644 1.517 1.258.364 2.233 1.721 2.605 2.656a.841.841 0 0 1 .053.22v2.869a.641.641 0 0 1-.078.256Zm-11.75-5.992h-.344a4.359 4.359 0 0 1-.355.508c-.77.947-1.918 1.492-3.508 1.492-1.725 0-2.989-.359-3.782-1.259a2.137 2.137 0 0 1-.085-.104L4 11.746v6.585c1.435.779 4.514 2.179 8 2.179 3.486 0 6.565-1.4 8-2.179v-6.585l-.098-.104s-.033.045-.085.104c-.793.9-2.057 1.259-3.782 1.259-1.59 0-2.738-.545-3.508-1.492a4.359 4.359 0 0 1-.355-.508Zm2.328 3.25c.549 0 1 .451 1 1v2c0 .549-.451 1-1 1-.549 0-1-.451-1-1v-2c0-.549.451-1 1-1Zm-5 0c.549 0 1 .451 1 1v2c0 .549-.451 1-1 1-.549 0-1-.451-1-1v-2c0-.549.451-1 1-1Zm3.313-6.185c.136 1.057.403 1.913.878 2.497.442.544 1.134.938 2.344.938 1.573 0 2.292-.337 2.657-.751.384-.435.558-1.15.558-2.361 0-1.14-.243-1.847-.705-2.319-.477-.488-1.319-.862-2.824-1.025-1.487-.161-2.192.138-2.533.529-.269.307-.437.808-.438 1.578v.021c0 .265.021.562.063.893Zm-1.626 0c.042-.331.063-.628.063-.894v-.02c-.001-.77-.169-1.271-.438-1.578-.341-.391-1.046-.69-2.533-.529-1.505.163-2.347.537-2.824 1.025-.462.472-.705 1.179-.705 2.319 0 1.211.175 1.926.558 2.361.365.414 1.084.751 2.657.751 1.21 0 1.902-.394 2.344-.938.475-.584.742-1.44.878-2.497Z"></path></svg>
+                <span class="text-zinc-400 text-xs font-medium tracking-wide group-hover/icon:text-zinc-200 transition-colors text-center">Copilot</span>
+             </div>
+
+             <div class="flex flex-col items-center justify-center p-6 bg-zinc-950/40 border border-zinc-800/50 rounded-2xl hover:bg-zinc-800/50 hover:border-zinc-700 hover:-translate-y-1 transition-all shadow-inner group/icon">
+                <svg viewBox="0 0 24 24" fill="currentColor" class="text-yellow-400 mb-3 h-8 w-8 drop-shadow-md group-hover/icon:scale-110 transition-transform duration-300"><path d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"></path></svg>
+                <span class="text-zinc-400 text-xs font-medium tracking-wide group-hover/icon:text-zinc-200 transition-colors text-center">Grok</span>
+             </div>
+
+             <div class="flex flex-col items-center justify-center p-6 bg-zinc-950/40 border border-zinc-800/50 rounded-2xl hover:bg-zinc-800/50 hover:border-zinc-700 hover:-translate-y-1 transition-all shadow-inner group/icon">
+                <svg viewBox="0 0 24 24" fill="currentColor" class="text-cyan-400 mb-3 h-8 w-8 drop-shadow-md group-hover/icon:scale-110 transition-transform duration-300"><path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"></path></svg>
+                <span class="text-zinc-400 text-xs font-medium tracking-wide group-hover/icon:text-zinc-200 transition-colors text-center">NotebookLM</span>
+             </div>
+
+             <div class="flex flex-col items-center justify-center p-6 bg-zinc-950/40 border border-zinc-800/50 rounded-2xl hover:bg-zinc-800/50 hover:border-zinc-700 hover:-translate-y-1 transition-all shadow-inner group/icon">
+                <svg viewBox="0 0 24 24" fill="currentColor" class="text-purple-400 mb-3 h-8 w-8 drop-shadow-md group-hover/icon:scale-110 transition-transform duration-300"><path d="M4.459 4.208c.746.606 1.026.56 2.428.466l13.215-.793c.28 0 .047-.28-.046-.326L17.86 1.968c-.42-.326-.981-.7-2.055-.607L3.01 2.295c-.466.046-.56.28-.374.466zm.793 3.08v13.904c0 .747.373 1.027 1.214.98l14.523-.84c.841-.046.935-.56.935-1.167V6.354c0-.606-.233-.933-.748-.887l-15.177.887c-.56.047-.747.327-.747.933zm14.337.745c.093.42 0 .84-.42.888l-.7.14v10.264c-.608.327-1.168.514-1.635.514-.748 0-.935-.234-1.495-.933l-4.577-7.186v6.952L12.21 19s0 .84-1.168.84l-3.222.186c-.093-.186 0-.653.327-.746l.84-.233V9.854L7.822 9.76c-.094-.42.14-1.026.793-1.073l3.456-.233 4.764 7.279v-6.44l-1.215-.139c-.093-.514.28-.887.747-.933zM1.936 1.035l13.31-.98c1.634-.14 2.055-.047 3.082.7l4.249 2.986c.7.513.934.653.934 1.213v16.378c0 1.026-.373 1.634-1.68 1.726l-15.458.934c-.98.047-1.448-.093-1.962-.747l-3.129-4.06c-.56-.747-.793-1.306-.793-1.96V2.667c0-.839.374-1.54 1.447-1.632z"></path></svg>
+                <span class="text-zinc-400 text-xs font-medium tracking-wide group-hover/icon:text-zinc-200 transition-colors text-center">Notion AI</span>
+             </div>
+
+             <div class="flex flex-col items-center justify-center p-6 bg-zinc-950/40 border border-zinc-800/50 rounded-2xl hover:bg-zinc-800/50 hover:border-zinc-700 hover:-translate-y-1 transition-all shadow-inner group/icon">
+                <svg viewBox="0 0 24 24" fill="currentColor" class="text-pink-400 mb-3 h-8 w-8 drop-shadow-md group-hover/icon:scale-110 transition-transform duration-300"><path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.527 2.527 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.527 2.527 0 0 1-2.52-2.523 2.526 2.526 0 0 1 2.52-2.52h6.313A2.527 2.527 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z"></path></svg>
+                <span class="text-zinc-400 text-xs font-medium tracking-wide group-hover/icon:text-zinc-200 transition-colors text-center">Slack AI</span>
+             </div>
+
+             <div class="flex flex-col items-center justify-center p-6 bg-zinc-950/40 border border-zinc-800/50 rounded-2xl hover:bg-zinc-800/50 hover:border-zinc-700 hover:-translate-y-1 transition-all shadow-inner group/icon">
+                <i data-lucide="brain" class="text-teal-400 mb-3 h-8 w-8 drop-shadow-md"></i>
+                <span class="text-zinc-400 text-xs font-medium tracking-wide group-hover/icon:text-zinc-200 transition-colors text-center">Antigravity</span>
+             </div>
+
+             <div class="flex flex-col items-center justify-center p-6 bg-zinc-950/40 border border-zinc-800/50 rounded-2xl hover:bg-zinc-800/50 hover:border-zinc-700 hover:-translate-y-1 transition-all shadow-inner group/icon">
+                <svg viewBox="0 0 24 24" fill="currentColor" class="text-white mb-3 h-8 w-8 drop-shadow-md group-hover/icon:scale-110 transition-transform duration-300"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"></path></svg>
+                <span class="text-zinc-400 text-xs font-medium tracking-wide group-hover/icon:text-zinc-200 transition-colors text-center">GitHub</span>
+             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact -->
+<section id="contact" class="py-20 md:py-32 px-4 sm:px-6 md:px-12 lg:px-24 bg-zinc-950 relative border-t border-zinc-900">
+  <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-zinc-800/10 rounded-full blur-[100px] pointer-events-none"></div>
+  <div class="max-w-6xl mx-auto w-full relative z-10">
+    <div class="flex items-center gap-6 mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold text-white tracking-tight drop-shadow-md">Get In Touch</h2>
+      <div class="h-px bg-zinc-800 flex-1"></div>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-16">
+      <div class="lg:col-span-2 space-y-10">
+        <div class="space-y-4">
+          <h3 class="text-3xl font-bold text-white tracking-tight">Let's build something.</h3>
+          <p class="text-zinc-400 leading-relaxed text-lg font-light">I'm always open to discussing product opportunities, side projects, or just chatting about AI and the future of tech.</p>
+        </div>
+        <div class="flex flex-col space-y-8 bg-zinc-900/40 p-8 rounded-2xl border border-zinc-800/50 shadow-lg backdrop-blur-sm">
+          <a href="mailto:vishwajitlad233@gmail.com" class="flex items-center gap-4 text-zinc-300 hover:text-white transition-colors group">
+            <div class="p-3 bg-zinc-800/50 rounded-full group-hover:bg-zinc-700 transition-colors shadow-inner"><i data-lucide="mail" class="w-5 h-5"></i></div>
+            <span class="font-medium tracking-wide break-all">vishwajitlad233@gmail.com</span>
+          </a>
+          
+          <div class="flex items-center gap-6 pt-1">
+            <a href="https://www.linkedin.com/in/vishwajitlad/" target="_blank" class="p-4 bg-zinc-800/50 rounded-full text-zinc-400 hover:text-[#0A66C2] hover:bg-zinc-800 transition-all shadow-inner hover:scale-110 flex items-center justify-center" title="LinkedIn"><i class="fa-brands fa-linkedin text-3xl"></i></a>
+            <a href="https://www.instagram.com/vishwajit_lad_?igsh=bzhmeXh5ZTNramMx" target="_blank" class="p-4 bg-zinc-800/50 rounded-full text-zinc-400 hover:text-[#E1306C] hover:bg-zinc-800 transition-all shadow-inner hover:scale-110 flex items-center justify-center" title="Instagram"><i class="fa-brands fa-instagram text-3xl"></i></a>
+            <a href="https://x.com/VishwajitLad" target="_blank" class="p-4 bg-zinc-800/50 rounded-full text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all shadow-inner hover:scale-110 flex items-center justify-center" title="X (Twitter)"><i class="fa-brands fa-x-twitter text-3xl"></i></a>
+            <a href="https://github.com/vishwajitlad233" target="_blank" class="p-4 bg-zinc-800/50 rounded-full text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all shadow-inner hover:scale-110 flex items-center justify-center" title="GitHub"><i class="fa-brands fa-github text-3xl"></i></a>
+          </div>
+
+          <div class="pt-4 border-t border-zinc-800/50">
+             <a href="https://customer-assets.emergentagent.com/job_pm-portfolio-34/artifacts/xxkljaom_VishwajitLad_PM_Resume.pdf" target="_blank" class="flex items-center justify-center w-full border border-zinc-700 bg-zinc-900/50 text-white hover:bg-zinc-800 rounded-xl py-3 shadow-lg transition-all font-medium">
+               <i data-lucide="file-text" class="mr-2 h-4 w-4"></i> Download Resume
+             </a>
+          </div>
+        </div>
+      </div>
+      <div class="lg:col-span-3">
+        <form action="https://formsubmit.co/vishwajitlad233@gmail.com" method="POST" class="space-y-6 bg-zinc-900/30 p-8 rounded-3xl border border-zinc-800/50 shadow-[0_20px_40px_rgba(0,0,0,0.3)] backdrop-blur-md relative overflow-hidden">
+          <!-- Optional: Disables the annoying captcha screen -->
+          <input type="hidden" name="_captcha" value="false">
+          
+          <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-zinc-700 to-transparent opacity-50"></div>
+          <div class="space-y-2">
+            <label class="text-sm font-semibold tracking-wide text-zinc-300 uppercase">Name</label>
+            <input type="text" name="name" required placeholder="Your name" class="w-full bg-zinc-950/50 border border-zinc-800/80 text-white placeholder-zinc-600 focus:outline-none focus:border-zinc-500 rounded-xl px-4 py-4 shadow-inner transition-all">
+          </div>
+          <div class="space-y-2">
+            <label class="text-sm font-semibold tracking-wide text-zinc-300 uppercase">Email Address</label>
+            <input type="email" name="email" required placeholder="you@example.com" class="w-full bg-zinc-950/50 border border-zinc-800/80 text-white placeholder-zinc-600 focus:outline-none focus:border-zinc-500 rounded-xl px-4 py-4 shadow-inner transition-all">
+          </div>
+          <div class="space-y-2">
+            <label class="text-sm font-semibold tracking-wide text-zinc-300 uppercase">Message</label>
+            <textarea name="message" rows="5" required placeholder="Tell me about your project..." class="w-full bg-zinc-950/50 border border-zinc-800/80 text-white placeholder-zinc-600 focus:outline-none focus:border-zinc-500 rounded-xl px-4 py-4 shadow-inner resize-none transition-all"></textarea>
+          </div>
+          <button type="submit" class="w-full flex items-center justify-center bg-white text-black hover:bg-zinc-200 transition-all rounded-xl py-4 font-bold shadow-[0_0_20px_rgba(255,255,255,0.1)] text-lg">
+            Send Message <i data-lucide="send" class="ml-2 h-5 w-5"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="py-8 px-6 border-t border-zinc-900 bg-zinc-950 text-center">
+  <p class="text-zinc-500 text-sm">Designed & Built by <span class="text-zinc-300">Vishwajit Lad</span>.</p>
+</footer>
+
+<script>
+    lucide.createIcons();
+</script>
+</body>
+</html>

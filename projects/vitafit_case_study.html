@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VitaFit — Product Case Study | Vishwajit Lad</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  :root {
+    --bg: #06060f;
+    --surface: #0e0e1c;
+    --border: #1a1a30;
+    --green: #22d473;
+    --green2: #40e68a;
+    --orange: #ff6b2b;
+    --cyan: #00f5ff;
+    --text: #f0f0fa;
+    --muted: #8888aa;
+    --card: #0d0d1e;
+    --radius: 18px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    font-family: 'Inter', sans-serif;
+    color: var(--text);
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* ── Page Loader ── */
+  .page-loader {
+    position: fixed; inset: 0; z-index: 9999;
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+  }
+  .page-loader.loaded { opacity: 0; visibility: hidden; }
+  .loader-logo {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2rem; font-weight: 800;
+    color: var(--green);
+    letter-spacing: -1px;
+    animation: loaderPulse 1s ease infinite alternate;
+  }
+  @keyframes loaderPulse { from { opacity:.4; } to { opacity:1; } }
+
+  /* ── Nav ── */
+  nav {
+    position: fixed; top:0; left:0; right:0; z-index:100;
+    padding: 0 40px;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+  }
+  .nav-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 0;
+  }
+  nav.scrolled {
+    background: rgba(6,6,15,0.92);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 1px 0 rgba(34,212,115,0.12);
+  }
+  .nav-logo { display:flex; align-items:center; gap:10px; }
+  .nav-logo-icon {
+    width: 30px; height: 30px; background: var(--green);
+    border-radius: 8px; display: flex; align-items:center; justify-content:center;
+    font-size: 15px;
+  }
+  .nav-logo-name {
+    font-family: 'Space Grotesk', sans-serif; font-weight: 800;
+    font-size: 1.1rem; color: var(--text);
+    letter-spacing: -0.5px;
+  }
+  .nav-links { display: flex; align-items: center; gap: 32px; }
+  .nav-links a {
+    font-size: 0.85rem; font-weight: 500; color: var(--muted);
+    text-decoration: none; transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+  .nav-cta {
+    background: var(--green) !important; color: var(--bg) !important;
+    padding: 8px 20px; border-radius: 20px; font-weight: 700 !important;
+    font-size: 0.83rem !important;
+  }
+  .nav-cta:hover { opacity: 0.88; }
+
+  /* ── Hero ── */
+  .hero {
+    min-height: 100vh;
+    padding: 100px 80px 80px;
+    display: flex; align-items: center;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -200px; left: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(34,212,115,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-inner {
+    width: 100%; max-width: 1200px; margin: 0 auto;
+    display: flex; align-items: center; gap: 80px;
+  }
+  .hero-content { flex: 1; }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(34,212,115,0.1); border: 1px solid rgba(34,212,115,0.3);
+    color: var(--green); padding: 6px 14px; border-radius: 20px;
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2.2rem, 4vw, 3.2rem);
+    font-weight: 800; line-height: 1.1;
+    letter-spacing: -1.5px; margin-bottom: 20px;
+  }
+  .hero h1 span { color: var(--green); }
+  .hero-subtitle {
+    font-size: 1.05rem; color: var(--muted); max-width: 500px;
+    line-height: 1.8; margin-bottom: 32px;
+  }
+  .hero-author {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 32px;
+  }
+  .hero-author-avatar {
+    width: 40px; height: 40px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--green), var(--orange));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 0.9rem; color: #fff;
+  }
+  .hero-author-info { display: flex; flex-direction: column; }
+  .hero-author-info strong { font-size: 0.9rem; color: var(--text); }
+  .hero-author-info span { font-size: 0.78rem; color: var(--muted); }
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 13px 28px; border-radius: 14px;
+    font-weight: 700; font-size: 0.88rem; text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+    cursor: pointer; border: none;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--green), #1ab85e);
+    color: #fff;
+    box-shadow: 0 8px 24px rgba(34,212,115,0.28);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(34,212,115,0.38); }
+  .btn-outline {
+    background: transparent; color: var(--text);
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .btn-outline:hover { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.04); }
+
+  /* ── iPhone Frame (same as Swiggy) ── */
+  .hero-phone {
+    flex-shrink: 0;
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+    position: relative;
+  }
+  .hero-phone::before {
+    content: '';
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 420px; height: 500px;
+    background: radial-gradient(ellipse, rgba(34,212,115,0.12) 0%, transparent 70%);
+    border-radius: 50%; pointer-events: none; z-index: 0;
+    animation: glowPulse 4s ease infinite alternate;
+  }
+  @keyframes glowPulse { from { opacity:.5; } to { opacity:1; } }
+
+  .iphone-frame {
+    width: 320px; height: 693px;
+    background: #111120;
+    border-radius: 52px;
+    border: 2px solid rgba(255,255,255,0.08);
+    overflow: hidden;
+    position: relative; z-index: 1;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.06),
+      0 0 0 3px #1a1a2a,
+      0 40px 100px rgba(0,0,0,0.85),
+      0 0 60px rgba(34,212,115,0.06),
+      inset 0 1px 0 rgba(255,255,255,0.1);
+    animation: floatPhone 5s ease-in-out infinite;
+  }
+  @keyframes floatPhone {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  .iphone-frame:hover { animation-play-state: paused; }
+
+  .iphone-notch {
+    position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+    width: 110px; height: 32px;
+    background: #0a0a16; border-radius: 18px; z-index: 10;
+  }
+
+  .iphone-frame iframe {
+    width: 375px; height: 780px;
+    border: none; display: block;
+    transform-origin: top left;
+    transform: scale(0.8533); /* 320/375 = 0.8533 */
+    pointer-events: all;
+  }
+
+  /* Left buttons on shell */
+  .iphone-frame::before {
+    content: '';
+    position: absolute; left: -3px; top: 130px;
+    width: 3px; height: 34px; background: #222236;
+    border-radius: 3px 0 0 3px;
+    box-shadow: 0 50px 0 #222236;
+  }
+  .iphone-frame::after {
+    content: '';
+    position: absolute; right: -3px; top: 170px;
+    width: 3px; height: 66px; background: #222236;
+    border-radius: 0 3px 3px 0;
+  }
+  .phone-label {
+    font-size: 0.78rem; color: var(--muted); text-align: center;
+    position: relative; z-index: 1;
+  }
+  .phone-label strong { color: var(--green); }
+
+  /* ── Marquee Divider ── */
+  .marquee-divider {
+    overflow: hidden; white-space: nowrap; padding: 18px 0;
+    border-top: 1px solid rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .marquee-track {
+    display: inline-flex;
+    animation: marquee 28s linear infinite;
+  }
+  .marquee-track span {
+    font-size: 13px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 4px; color: rgba(255,255,255,0.06); padding: 0 36px;
+  }
+  .marquee-track span.accent { color: rgba(34,212,115,0.18); }
+  @keyframes marquee { 0%{ transform:translateX(0); } 100%{ transform:translateX(-50%); } }
+
+  /* ── General Section ── */
+  section { padding: 100px 80px; }
+  .section-inner { max-width: 1100px; margin: 0 auto; }
+  .section-label {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--green); margin-bottom: 16px;
+  }
+  h2.section-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 800;
+    letter-spacing: -1px; margin-bottom: 14px; line-height: 1.2;
+  }
+  h2.section-title span { color: var(--green); }
+  p.section-subtitle { font-size: 1rem; color: var(--muted); max-width: 620px; line-height: 1.8; margin-bottom: 48px; }
+  .section-alt { background: var(--surface); }
+
+  /* fade-in */
+  .fade-in { opacity: 0; transform: translateY(28px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── Problem ── */
+  .pain-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    margin-top: 0;
+  }
+  .pain-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 26px;
+    transition: transform 0.2s, border-color 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .pain-card:hover { transform: translateY(-4px); border-color: rgba(34,212,115,0.25); }
+  .pain-card-number {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2rem; font-weight: 800; color: rgba(34,212,115,0.2);
+    margin-bottom: 10px; line-height: 1;
+  }
+  .pain-card h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; }
+  .pain-card p { font-size: 0.86rem; color: var(--muted); line-height: 1.7; }
+
+  /* ── Personas ── */
+  .persona-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+  .persona-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 28px;
+    transition: all 0.2s; position: relative; overflow: hidden;
+  }
+  .persona-card:hover { border-color: rgba(34,212,115,0.25); transform: translateY(-4px); }
+  .persona-icon {
+    width: 52px; height: 52px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem; margin-bottom: 14px;
+    background: rgba(34,212,115,0.1); border: 1px solid rgba(34,212,115,0.2);
+  }
+  .persona-card h4 { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+  .persona-role { font-size: 0.75rem; color: var(--green); font-weight: 600; margin-bottom: 12px; text-transform: uppercase; letter-spacing:.5px; }
+  .persona-card p.persona-story { font-size: 0.86rem; color: var(--muted); line-height: 1.7; }
+
+  /* ── Solution / Features ── */
+  .feature-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .feature-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 28px;
+    transition: all 0.2s; position: relative; overflow: hidden;
+  }
+  .feature-card:hover { border-color: rgba(34,212,115,0.25); transform: translateY(-4px); }
+  .feature-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; margin-bottom: 16px;
+    background: rgba(34,212,115,0.12); border: 1px solid rgba(34,212,115,0.2);
+  }
+  .feature-card h4 { font-size: 1rem; font-weight: 700; margin-bottom: 10px; }
+  .feature-card p { font-size: 0.86rem; color: var(--muted); line-height: 1.7; }
+  .feature-list { margin-top: 10px; padding-left: 0; list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .feature-list li { display: flex; gap: 8px; font-size: 0.84rem; color: var(--muted); }
+  .feature-list li::before { content: '✦'; color: var(--green); flex-shrink: 0; font-size: 0.65rem; line-height: 1.7; }
+
+  /* ── Metrics ── */
+  .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+  .metric-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 28px; text-align: center;
+    transition: all 0.2s;
+  }
+  .metric-card:hover { border-color: rgba(34,212,115,0.3); transform: translateY(-4px); }
+  .metric-num {
+    font-family: 'Space Grotesk', sans-serif; font-size: 2.6rem; font-weight: 800;
+    color: var(--green); line-height: 1; margin-bottom: 6px;
+  }
+  .metric-label { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
+  .metric-label span { color: var(--green); font-weight: 600; }
+
+  .north-star {
+    background: linear-gradient(135deg, rgba(34,212,115,0.08), rgba(64,230,138,0.03));
+    border: 1px solid rgba(34,212,115,0.25); border-radius: var(--radius);
+    padding: 28px 32px; display: flex; align-items: center; gap: 20px;
+  }
+  .north-star-icon { font-size: 2.2rem; flex-shrink: 0; }
+  .north-star h4 { font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; font-weight: 800; margin-bottom: 4px; }
+  .north-star p { font-size: 0.86rem; color: var(--muted); line-height: 1.7; }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center; padding: 64px 40px;
+    border-top: 1px solid var(--border);
+  }
+  footer h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; font-weight: 800; margin-bottom: 4px; }
+  .footer-role { font-size: 0.82rem; color: var(--green); font-weight: 600; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; }
+  footer p { font-size: 0.88rem; color: var(--muted); max-width: 500px; margin: 0 auto 24px; line-height: 1.7; }
+  .footer-cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--green); color: var(--bg);
+    padding: 12px 24px; border-radius: 12px;
+    font-weight: 700; font-size: 0.88rem; text-decoration: none;
+    transition: opacity 0.2s; margin-bottom: 24px;
+  }
+  .footer-cta:hover { opacity: 0.85; }
+  .footer-copy { font-size: 0.78rem; color: rgba(136,136,170,0.5); margin-top: 12px; }
+
+  /* ── Responsive ── */
+  @media (max-width: 1024px) {
+    .hero { padding: 100px 32px 60px; }
+    .hero-inner { flex-direction: column; gap: 50px; }
+    .hero-phone { width: 100%; justify-content: center; }
+    section { padding: 80px 32px; }
+    .pain-grid, .persona-grid { grid-template-columns: 1fr 1fr; }
+    .feature-grid, .metrics-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .iphone-frame { width: 260px; height: 563px; }
+    .iphone-frame iframe { transform: scale(0.6933); }
+    .pain-grid, .persona-grid { grid-template-columns: 1fr; }
+    nav { padding: 0 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Page Loader -->
+<div class="page-loader" id="pageLoader">
+  <div class="loader-logo">VitaFit</div>
+</div>
+
+<!-- Nav -->
+<nav id="mainNav">
+  <div class="nav-inner">
+    <div class="nav-logo">
+      <div class="nav-logo-icon">🏃</div>
+      <div class="nav-logo-name">VitaFit</div>
+      <span style="font-size:0.75rem; color:var(--muted); margin-left:6px; font-weight:500;">Case Study</span>
+    </div>
+    <div class="nav-links">
+      <a href="#problem">Problem</a>
+      <a href="#users">Users</a>
+      <a href="#solution">Solution</a>
+      <a href="#metrics">Metrics</a>
+      <a href="../index.html" class="nav-cta">← Portfolio</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero" id="hero">
+  <div class="hero-inner">
+    <div class="hero-content">
+      <div class="hero-badge"><i class="fa-solid fa-heartbeat"></i> Product Case Study</div>
+      <h1>Reimagining <span>Fitness Habits</span><br>with VitaFit</h1>
+      <p class="hero-subtitle">
+        A 0→1 fitness app concept built on streak psychology and social accountability.
+        Two core features — FitStreak &amp; Instructor Connect — designed to solve the drop-off
+        crisis among India's urban fitness users.
+      </p>
+      <div class="hero-author">
+        <div class="hero-author-avatar">VL</div>
+        <div class="hero-author-info">
+          <strong>Vishwajit Lad</strong>
+          <span>Associate Product Manager</span>
+        </div>
+      </div>
+      <div class="hero-actions">
+        <a href="#solution" class="btn btn-primary">
+          <i class="fa-solid fa-bolt"></i> Explore Features
+        </a>
+        <a href="#problem" class="btn btn-outline">
+          <i class="fa-solid fa-arrow-down"></i> Read Case Study
+        </a>
+      </div>
+    </div>
+
+    <!-- Embedded Prototype iPhone Frame -->
+    <div class="hero-phone">
+      <div class="iphone-frame">
+        <div class="iphone-notch"></div>
+        <iframe src="vitafit_prototype.html?embed=true" title="VitaFit Prototype" loading="lazy"></iframe>
+      </div>
+      <p class="phone-label"><strong>↑ Interactive Prototype</strong> — tap &amp; scroll to explore</p>
+    </div>
+  </div>
+</section>
+
+<!-- Marquee -->
+<div class="marquee-divider">
+  <div class="marquee-track">
+    <span>Streak Psychology</span><span class="accent">•</span>
+    <span>Social Accountability</span><span class="accent">•</span>
+    <span>0→1 Product</span><span class="accent">•</span>
+    <span>FitStreak</span><span class="accent">•</span>
+    <span>Instructor Connect</span><span class="accent">•</span>
+    <span>User Personas</span><span class="accent">•</span>
+    <span>PRD</span><span class="accent">•</span>
+    <span>Mobile Prototype</span><span class="accent">•</span>
+    <span>Streak Psychology</span><span class="accent">•</span>
+    <span>Social Accountability</span><span class="accent">•</span>
+    <span>0→1 Product</span><span class="accent">•</span>
+    <span>FitStreak</span><span class="accent">•</span>
+    <span>Instructor Connect</span><span class="accent">•</span>
+    <span>User Personas</span><span class="accent">•</span>
+    <span>PRD</span><span class="accent">•</span>
+    <span>Mobile Prototype</span><span class="accent">•</span>
+  </div>
+</div>
+
+<!-- Problem -->
+<section id="problem" class="section-alt">
+  <div class="section-inner">
+    <div class="fade-in">
+      <div class="section-label"><i class="fa-solid fa-circle-exclamation"></i> The Problem</div>
+      <h2 class="section-title">Why Most Fitness Apps <span>Fail</span> Their Users</h2>
+      <p class="section-subtitle">
+        India's fitness app market is booming — but retention is broken.
+        Most users quit within 3 weeks. The problem isn't motivation.
+        It's missing accountability and the lack of a human connection.
+      </p>
+    </div>
+    <div class="fade-in pain-grid">
+      <div class="pain-card">
+        <div class="pain-card-number">01</div>
+        <h4>The Drop-Off Crisis</h4>
+        <p>Users start strong but lose momentum after 2–3 weeks. No streak, no social pressure, no reason to return.</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-card-number">02</div>
+        <h4>No Real Expert Access</h4>
+        <p>Generic AI workouts don't account for individual bodies or goals. Users need coaches, not algorithms.</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-card-number">03</div>
+        <h4>Isolation Without Community</h4>
+        <p>Working out alone is hard. Existing apps have flat social features. Group challenges with accountability are missing.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Personas -->
+<section id="users">
+  <div class="section-inner">
+    <div class="fade-in">
+      <div class="section-label"><i class="fa-solid fa-users"></i> User Personas</div>
+      <h2 class="section-title">Built for <span>Real Users</span>, Not Archetypes</h2>
+      <p class="section-subtitle">Three core personas from JTBD research and observed fitness drop-off patterns.</p>
+    </div>
+    <div class="fade-in persona-grid">
+      <div class="persona-card">
+        <div class="persona-icon">👩‍💼</div>
+        <h4>Priya, 27</h4>
+        <div class="persona-role">Urban Working Professional</div>
+        <p class="persona-story">Works 9-to-7. Tried gym memberships twice but couldn't commit. Needs a flexible, gamified routine she can fit into her lunch break. Wants to feel rewarded for small daily wins.</p>
+      </div>
+      <div class="persona-card">
+        <div class="persona-icon">🏋️</div>
+        <h4>Rahul, 24</h4>
+        <div class="persona-role">College Student / Fitness Newbie</div>
+        <p class="persona-story">Just starting out. Overwhelmed by complex apps. Wants guidance from real experts, not YouTube. Social leaderboards keep him motivated and coming back.</p>
+      </div>
+      <div class="persona-card">
+        <div class="persona-icon">🧘‍♀️</div>
+        <h4>Ananya, 32</h4>
+        <div class="persona-role">Stay-at-Home Mom / Yoga Enthusiast</div>
+        <p class="persona-story">Has tried 5 apps. Loves group challenges but hates artificial social feeds. Wants to connect with an instructor who understands her goals. Streak badges are her biggest motivator.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Solution -->
+<section id="solution" class="section-alt">
+  <div class="section-inner">
+    <div class="fade-in">
+      <div class="section-label"><i class="fa-solid fa-layer-group"></i> The Solution</div>
+      <h2 class="section-title">Two Features. One <span>Cohesive</span> Experience.</h2>
+      <p class="section-subtitle">Designed around the core insight: habit-forming requires both intrinsic motivation (streaks) and extrinsic accountability (social + expert).</p>
+    </div>
+    <div class="fade-in feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🔥</div>
+        <h4>Feature 1 — FitStreak</h4>
+        <p>A streak-based accountability engine inspired by Duolingo's retention mechanics, redesigned for fitness. Users build daily streaks, join group challenges, earn real badges, and compete on leaderboards.</p>
+        <ul class="feature-list">
+          <li>Daily streak tracker with at-risk alerts before midnight</li>
+          <li>30/60/90-day group challenges with social progress feeds</li>
+          <li>Leaderboard with friend groups and global rank</li>
+          <li>Badge system — earned through real milestones</li>
+          <li>Milestone celebration with social shoutout notifications</li>
+        </ul>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🧑‍🏫</div>
+        <h4>Feature 2 — Instructor Connect</h4>
+        <p>Connects users with verified fitness instructors for direct messaging, session booking, and personalised workout plans. Scalable coaching from expensive private sessions to digital experience.</p>
+        <ul class="feature-list">
+          <li>Rich instructor profiles: specialisations, ratings, history</li>
+          <li>Follow instructors, receive personalised inbox messages</li>
+          <li>Group classes and skill-based session browsing</li>
+          <li>Real-time chat with read receipts and media sharing</li>
+          <li>Instructor analytics dashboard for retention tracking</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Metrics -->
+<section id="metrics">
+  <div class="section-inner">
+    <div class="fade-in">
+      <div class="section-label"><i class="fa-solid fa-chart-line"></i> Success Metrics</div>
+      <h2 class="section-title">How We'll Measure <span>Impact</span></h2>
+      <p class="section-subtitle">Metrics designed to reflect genuine behaviour change, not just app opens.</p>
+    </div>
+    <div class="fade-in metrics-grid">
+      <div class="metric-card">
+        <div class="metric-num">D30</div>
+        <div class="metric-label">Day-30 Retention<br><span>Target: ≥ 40%</span></div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-num">7+</div>
+        <div class="metric-label">Avg Streak Length<br><span>Target: 7 days at 30d mark</span></div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-num">60%</div>
+        <div class="metric-label">Challenge Completion<br><span>Of enrolled users</span></div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-num">3.5★</div>
+        <div class="metric-label">Instructor Rating<br><span>Min acceptable average</span></div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-num">35%</div>
+        <div class="metric-label">Instructor Follow Rate<br><span>After first session</span></div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-num">4min</div>
+        <div class="metric-label">Daily Active Time<br><span>App engagement depth</span></div>
+      </div>
+    </div>
+    <div class="fade-in north-star">
+      <div class="north-star-icon">⭐</div>
+      <div>
+        <h4>North Star — Weekly Active Streak Users (WASU)</h4>
+        <p>Number of users who completed at least one workout session and maintained their streak in a given week. Captures both retention AND habitual behaviour in a single metric.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <h3>Vishwajit Lad</h3>
+  <div class="footer-role">Associate Product Manager &amp; AI Expert</div>
+  <p>This case study demonstrates 0→1 product thinking, streak-based retention design, and
+     persona-driven feature development for a fitness tech context.</p>
+  <a href="../index.html" class="footer-cta">
+    <i class="fa-solid fa-arrow-left"></i> Back to Portfolio
+  </a>
+  <div class="footer-copy">© 2026 Vishwajit Lad. VitaFit is a product concept case study.</div>
+</footer>
+
+<script>
+  // Page loader
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('pageLoader').classList.add('loaded');
+    }, 600);
+  });
+
+  // Nav scroll effect
+  const nav = document.getElementById('mainNav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 20);
+  });
+
+  // Scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -50px 0px' });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

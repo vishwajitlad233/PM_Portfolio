@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zomato Delivery Strategy | Vishwajit Lad</title>
+
+    <link rel="stylesheet" href="css/style.css?v=3">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/components.css?v=3">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+    <style>
+        .zomato-red { color: #E23744 !important; }
+        .bg-zomato { background: rgba(226, 55, 68, 0.1) !important; border-color: rgba(226, 55, 68, 0.3) !important; }
+        
+        .section-header { margin-bottom: 60px; }
+        .section-header .num { font-family: var(--font-heading); color: #E23744; font-size: 1.2rem; font-weight: 700; margin-right: 12px; }
+        .section-header h2 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 16px; }
+        .section-header p { color: var(--text-muted); font-size: 1.1rem; max-width: 600px; }
+
+        .stat-val { font-family: var(--font-heading); font-weight: 700; font-size: 2.5rem; color: #E23744; margin-bottom: 8px; line-height: 1; }
+        .stat-lbl { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* OKR Styles */
+        .okr-block { margin-bottom: 60px; }
+        .okr-head { background: linear-gradient(135deg, rgba(226,55,68,0.1), rgba(255,107,53,0.05)); border: 1px solid rgba(226,55,68,0.2); padding: 30px; border-radius: var(--radius-md); margin-bottom: 24px; }
+        .kr-card { padding: 24px; display: flex; flex-direction: column; justify-content: space-between; }
+        .kr-metric { font-size: 2rem; font-family: var(--font-heading); font-weight: 700; color: var(--text-main); margin: 10px 0; }
+        .progress-track { height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; margin-top: 16px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #E23744, #FF6B35); border-radius: 2px; }
+
+        /* Table Styles */
+        .premium-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; text-align: left; }
+        .premium-table th { padding: 16px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; font-size: 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .premium-table td { padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .premium-table tr:hover td { background: rgba(255,255,255,0.02); }
+        
+        .cohort-cell { border-radius: 6px; padding: 6px 10px; font-family: var(--font-heading); font-weight: 600; text-align: center; display: inline-block; min-width: 60px;}
+
+        /* Funnel specifics */
+        .funnel-step { display: flex; align-items: center; gap: 24px; margin-bottom: 12px; }
+        .funnel-bar-wrap { flex: 1; background: rgba(255,255,255,0.05); height: 48px; border-radius: 8px; overflow: hidden; position: relative; }
+        .funnel-bar { height: 100%; display: flex; align-items: center; padding: 0 20px; font-weight: 600; font-family: var(--font-heading); }
+        .funnel-meta { min-width: 150px; text-align: right; }
+        
+        .timeline-item { position: relative; padding-left: 30px; margin-bottom: 40px; }
+        .timeline-item::before { content: ''; position: absolute; left: 0; top: 0; bottom: -40px; width: 2px; background: rgba(226,55,68,0.3); }
+        .timeline-item::after { content: ''; position: absolute; left: -4px; top: 6px; width: 10px; height: 10px; border-radius: 50%; background: #E23744; box-shadow: 0 0 10px #E23744; }
+        .timeline-item:last-child::before { display: none; }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar scrolled">
+        <div class="container nav-container">
+            <a href="../index.html" class="nav-logo"><i class="fa-solid fa-brain"></i> PM<span>.AI</span></a>
+            <ul class="nav-links">
+                <li><a href="about.html">About</a></li>
+                <li><a href="work.html">Experience</a></li>
+                <li><a href="skills.html">Skills</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-wrapper">
+
+        <!-- HERO SECTION -->
+        <section class="hero-section" style="padding-top: 150px; min-height: 90vh; display: flex; align-items: center; position: relative; overflow: hidden;">
+            <div id="particles-bg" style="opacity: 0.3;"></div>
+            <div class="container grid grid-cols-2" style="align-items: center; gap: 80px;">
+                <div class="reveal">
+                    <a href="../index.html" class="btn btn-outline" style="margin-bottom: 32px; padding: 8px 20px; font-size: 0.85rem;"><i class="fa-solid fa-arrow-left" style="margin-right: 8px;"></i> Back</a>
+                    <div style="display: flex; gap: 10px; margin-bottom: 24px;">
+                        <span class="badge" style="background: rgba(226, 55, 68, 0.1); color: #E23744; border-color: rgba(226, 55, 68, 0.3);">Growth Strategy</span>
+                        <span class="badge">Zomato Delivery</span>
+                    </div>
+                    <h1 style="font-size: clamp(3rem, 5vw, 4.5rem); margin-bottom: 24px; line-height: 1.1;">
+                        Zomato Delivery<br><span style="color: #E23744;">CY 2026 Shift</span>
+                    </h1>
+                    <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 40px; line-height: 1.8;">
+                        A full-stack product management brief covering OKRs, funnel drop-off analysis, cohort retention modeling, and strategic recommendations for Tier-1 city food delivery dominance.
+                    </p>
+                    <div class="glass-card" style="padding: 24px 32px; display: inline-flex; gap: 48px;">
+                        <div>
+                            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 8px;">Role</div>
+                            <div style="font-weight: 600; font-family: var(--font-heading);">Product Manager</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 8px;">Scope</div>
+                            <div style="font-weight: 600; font-family: var(--font-heading);">Tier-1 Cities</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 8px;">Timeline</div>
+                            <div style="font-weight: 600; font-family: var(--font-heading);">CY 2026</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="reveal delay-200" style="position: relative;">
+                    <div style="position: absolute; width: 400px; height: 400px; background: radial-gradient(circle, rgba(226,55,68,0.2) 0%, transparent 70%); top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none;"></div>
+                    <img src="assets/images/zomato_hero.png" alt="Zomato Growth Strategy Illustration" style="width: 100%; border-radius: var(--radius-lg); position: relative; z-index: 2; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 10px 40px rgba(0,0,0,0.4);" class="animate-float">
+                </div>
+            </div>
+        </section>
+
+        <!-- MARKET CONTEXT -->
+        <section class="container reveal">
+            <div class="section-header">
+                <span class="num">00</span>
+                <h2>The Battlefield</h2>
+                <p>Zomato holds ~55% GMV share in Tier-1 markets but faces intensifying competition from Swiggy, ONDC aggregators, and dark-store quick-commerce entrants eating into meal frequency.</p>
+            </div>
+            
+            <div class="grid" style="grid-template-columns: repeat(5, 1fr); gap: 20px; margin-bottom: 40px;">
+                <div class="glass-card" style="padding: 24px; text-align: center;">
+                    <div class="stat-val">18M+</div>
+                    <div class="stat-lbl">MAU (Tier-1)</div>
+                </div>
+                <div class="glass-card" style="padding: 24px; text-align: center;">
+                    <div class="stat-val">3.4×</div>
+                    <div class="stat-lbl">Orders/User/Mo</div>
+                </div>
+                <div class="glass-card" style="padding: 24px; text-align: center;">
+                    <div class="stat-val">31%</div>
+                    <div class="stat-lbl">M1→M3 Churn</div>
+                </div>
+                <div class="glass-card" style="padding: 24px; text-align: center;">
+                    <div class="stat-val">₹312</div>
+                    <div class="stat-lbl">Average AOV</div>
+                </div>
+                <div class="glass-card" style="padding: 24px; text-align: center;">
+                    <div class="stat-val">28m</div>
+                    <div class="stat-lbl">Median Delivery</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-3">
+                <div class="glass-card" style="padding: 30px; border-top: 3px solid var(--accent-cyan);">
+                    <div class="badge badge-cyan" style="margin-bottom: 16px;">Opportunity</div>
+                    <h3 style="margin-bottom: 12px;">Discovery-to-Cart Gap</h3>
+                    <p style="color: var(--text-muted); font-size: 0.95rem;">Only 38% of app sessions where a user browses for >2 min result in a cart add. Personalisation and social proof layers are under-optimised for repeat users.</p>
+                </div>
+                <div class="glass-card" style="padding: 30px; border-top: 3px solid #E23744;">
+                    <div class="badge" style="background: rgba(226,55,68,0.1); color: #E23744; border-color: rgba(226,55,68,0.3); margin-bottom: 16px;">Threat</div>
+                    <h3 style="margin-bottom: 12px;">Loyalty Erosion at M3</h3>
+                    <p style="color: var(--text-muted); font-size: 0.95rem;">Cohort data shows a sharp 42% retention drop between month-1 and month-3 for non-Gold users, the exact window where competitor trials are most aggressive.</p>
+                </div>
+                <div class="glass-card" style="padding: 30px; border-top: 3px solid #06D6A0;">
+                    <div class="badge" style="background: rgba(6,214,160,0.1); color: #06D6A0; border-color: rgba(6,214,160,0.3); margin-bottom: 16px;">Tailwind</div>
+                    <h3 style="margin-bottom: 12px;">Gold Flywheel is Strong</h3>
+                    <p style="color: var(--text-muted); font-size: 0.95rem;">Zomato Gold subscribers show 2.8× higher 6-month LTV and only 14% M3 churn — the subscription moat is proven, conversion into it is the bottleneck.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- OKRS -->
+        <section class="container reveal">
+            <div class="section-header">
+                <span class="num">01</span>
+                <h2>OKRs for CY 2026</h2>
+                <p>Three objectives anchored to the core journey: acquire users who discover and transact, deepen order frequency, and build a delivery experience that earns trust.</p>
+            </div>
+
+            <!-- O1 -->
+            <div class="okr-block">
+                <div class="okr-head">
+                    <div style="font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; color: #E23744; margin-bottom: 8px; font-weight: 600;">Objective 1 — Discovery</div>
+                    <h3 style="font-size: 1.5rem;">Become the default food discovery platform for Tier-1 urban millennials and Gen-Z</h3>
+                </div>
+                <div class="grid grid-cols-3">
+                    <div class="glass-card kr-card">
+                        <div>
+                            <span class="badge">KR 1.1</span>
+                            <div class="kr-metric">45%</div>
+                            <p style="color: var(--text-muted); font-size: 0.85rem;">Session-to-cart conversion rate (from 38% baseline) by optimising personalised feed ranking and social proof modules.</p>
+                        </div>
+                        <div>
+                            <div class="progress-track"><div class="progress-fill" style="width: 84%;"></div></div>
+                            <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.75rem; color: #777;">
+                                <span>Base: 38%</span><span style="color: #E23744;">Target: +7pp</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card kr-card">
+                        <div>
+                            <span class="badge">KR 1.2</span>
+                            <div class="kr-metric">22M</div>
+                            <p style="color: var(--text-muted); font-size: 0.85rem;">Monthly Active Users in Tier-1 cities through improved SEO, referral loops, and contextual push notifications.</p>
+                        </div>
+                        <div>
+                            <div class="progress-track"><div class="progress-fill" style="width: 72%;"></div></div>
+                            <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.75rem; color: #777;">
+                                <span>Base: 18M</span><span style="color: #E23744;">Target: +4M</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card kr-card">
+                        <div>
+                            <span class="badge">KR 1.3</span>
+                            <div class="kr-metric">4.2★</div>
+                            <p style="color: var(--text-muted); font-size: 0.85rem;">Average app store rating (from 4.0) driven by UX improvements in search, filters, and load time reduction.</p>
+                        </div>
+                        <div>
+                            <div class="progress-track"><div class="progress-fill" style="width: 65%;"></div></div>
+                            <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.75rem; color: #777;">
+                                <span>Base: 4.0</span><span style="color: #E23744;">Target: +0.2</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- O2 & O3 can be abstracted or just one more block for visual flow -->
+            <div class="okr-block">
+                <div class="okr-head">
+                    <div style="font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; color: #E23744; margin-bottom: 8px; font-weight: 600;">Objective 2 — Frequency & Retention</div>
+                    <h3 style="font-size: 1.5rem;">Drive habitual ordering behaviour that makes Zomato indispensable weekly</h3>
+                </div>
+                <div class="grid grid-cols-3">
+                    <div class="glass-card kr-card">
+                        <div>
+                            <span class="badge">KR 2.1</span><div class="kr-metric">4.8×</div>
+                            <p style="color: var(--text-muted); font-size: 0.85rem;">Avg monthly orders per user via meal-plan nudges and scheduled ordering.</p>
+                        </div>
+                        <div>
+                            <div class="progress-track"><div class="progress-fill" style="width: 70%;"></div></div>
+                            <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.75rem; color: #777;"><span>Base: 3.4×</span><span style="color: #E23744;">Target: +1.4×</span></div>
+                        </div>
+                    </div>
+                    <div class="glass-card kr-card">
+                        <div>
+                            <span class="badge">KR 2.2</span><div class="kr-metric">22%</div>
+                            <p style="color: var(--text-muted); font-size: 0.85rem;">Non-Gold M3 churn reduced from 31% via targeted 5th order milestone Gold trial triggers.</p>
+                        </div>
+                        <div>
+                            <div class="progress-track"><div class="progress-fill" style="width: 78%;"></div></div>
+                            <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.75rem; color: #777;"><span>Base: 31%</span><span style="color: #E23744;">Target: −9pp</span></div>
+                        </div>
+                    </div>
+                    <div class="glass-card kr-card">
+                        <div>
+                            <span class="badge">KR 2.3</span><div class="kr-metric">35%</div>
+                            <p style="color: var(--text-muted); font-size: 0.85rem;">Gold subscriber penetration driven through contextual upsell overlays.</p>
+                        </div>
+                        <div>
+                            <div class="progress-track"><div class="progress-fill" style="width: 68%;"></div></div>
+                            <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.75rem; color: #777;"><span>Base: 24%</span><span style="color: #E23744;">Target: +11pp</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FUNNEL ANALYSIS -->
+        <section class="container reveal">
+            <div class="section-header">
+                <span class="num">02</span>
+                <h2>Funnel Drop-off Analysis</h2>
+                <p>Mapping 100 anonymous app sessions through the complete Discovery → Order → Delivery funnel to identify the highest-leverage drop-off points.</p>
+            </div>
+
+            <div class="grid grid-cols-2" style="align-items: start; gap: 40px; margin-bottom: 60px;">
+                <!-- Funnel Visual representation -->
+                <div>
+                    <h3 style="margin-bottom: 24px;">End-to-End Conversion Funnel</h3>
+                    <div class="funnel-step">
+                        <div class="funnel-bar-wrap"><div class="funnel-bar" style="width: 100%; background: linear-gradient(90deg, #E23744, #FF6B35);">App Open — 100</div></div>
+                        <div class="funnel-meta"><div style="font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700;">100%</div><div style="color: var(--text-muted); font-size: 0.8rem;">—</div></div>
+                    </div>
+                    <div class="funnel-step">
+                        <div class="funnel-bar-wrap"><div class="funnel-bar" style="width: 82%; background: linear-gradient(90deg, #C93040, #E05028);">Homepage Engaged — 82</div></div>
+                        <div class="funnel-meta"><div style="font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700;">82%</div><div style="color: #E23744; font-size: 0.8rem;">▼ −18% (bounce)</div></div>
+                    </div>
+                    <div class="funnel-step">
+                        <div class="funnel-bar-wrap"><div class="funnel-bar" style="width: 62%; background: linear-gradient(90deg, #A82535, #C04020);">Restaurant Viewed — 62</div></div>
+                        <div class="funnel-meta"><div style="font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700;">62%</div><div style="color: #E23744; font-size: 0.8rem;">▼ −20% ⚠ Drop</div></div>
+                    </div>
+                    <div class="funnel-step">
+                        <div class="funnel-bar-wrap"><div class="funnel-bar" style="width: 38%; background: linear-gradient(90deg, #8B1D28, #9E3316);">Cart Add — 38</div></div>
+                        <div class="funnel-meta"><div style="font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700; color: #E23744;">38%</div><div style="color: #E23744; font-size: 0.8rem; font-weight: bold;">▼ −24% ⚠ Critical</div></div>
+                    </div>
+                    <div class="funnel-step">
+                        <div class="funnel-bar-wrap"><div class="funnel-bar" style="width: 31%; background: linear-gradient(90deg, #6E151E, #7D2810);">Checkout Start — 31</div></div>
+                        <div class="funnel-meta"><div style="font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700;">31%</div><div style="color: #E23744; font-size: 0.8rem;">▼ −7%</div></div>
+                    </div>
+                    <div class="funnel-step">
+                        <div class="funnel-bar-wrap"><div class="funnel-bar" style="width: 24%; background: linear-gradient(90deg, #500F15, #5C1E09);">Order Placed — 24</div></div>
+                        <div class="funnel-meta"><div style="font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700;">24%</div><div style="color: #E23744; font-size: 0.8rem;">▼ −7% (Payment)</div></div>
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 24px;">
+                    <div class="glass-card" style="padding: 24px;">
+                        <h4 style="margin-bottom: 4px;">Drop-off by Stage (%)</h4>
+                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">Percentage lost at each transition</p>
+                        <canvas id="funnelDropChart" height="200"></canvas>
+                    </div>
+                    <div class="glass-card" style="padding: 24px;">
+                        <h4 style="margin-bottom: 4px;">Session-to-Cart by Segment</h4>
+                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">Cart conversion rate breakdown</p>
+                        <canvas id="segmentChart" height="160"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <h3 style="margin-bottom: 24px;">Critical Insights</h3>
+            <div class="grid grid-cols-2">
+                <div class="glass-card" style="border-left: 3px solid #E23744; padding: 24px;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <i class="fa-solid fa-magnifying-glass" style="color: #E23744; font-size: 1.2rem;"></i>
+                        <h4 style="margin: 0;">Restaurant Browse → Cart: −24pp</h4>
+                    </div>
+                    <p style="font-size: 0.95rem; color: var(--text-muted);">The biggest leak. Users scroll menus but don't add. Root causes: <strong style="color: var(--text-main);">decision paralysis from unstructured menus</strong> and missing social signals. <br><br><strong>Fix:</strong> AI-driven menu highlights + "People like you ordered" layer.</p>
+                </div>
+                <div class="glass-card" style="border-left: 3px solid var(--accent-cyan); padding: 24px;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <i class="fa-solid fa-credit-card" style="color: var(--accent-cyan); font-size: 1.2rem;"></i>
+                        <h4 style="margin: 0;">Checkout → Order Placed: −7pp</h4>
+                    </div>
+                    <p style="font-size: 0.95rem; color: var(--text-muted);">Payment friction: UPI timeouts and coupon-not-applied rage taps. <strong style="color: var(--text-main);">39% of payment failures are UPI timeout-related.</strong> <br><br><strong>Fix:</strong> Silent UPI retry flow, 1-tap re-order for frequent combos.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- COHORT ANALYSIS -->
+        <section class="container reveal">
+            <div class="section-header">
+                <span class="num">03</span>
+                <h2>Cohort Retention Modelling</h2>
+                <p>Tracking 2025 acquisition cohorts across M0–M6, segmented by Gold vs non-Gold subscribers, to understand where loyalty is built or lost over time.</p>
+            </div>
+
+            <div class="grid grid-cols-2" style="margin-bottom: 40px; align-items: stretch;">
+                <div class="glass-card" style="padding: 24px;">
+                    <h4 style="margin-bottom: 4px;">Retention Curve: Gold vs Non-Gold</h4>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">% of users still active by month</p>
+                    <canvas id="retentionChart" height="220"></canvas>
+                </div>
+                <div class="glass-card" style="padding: 24px;">
+                    <h4 style="margin-bottom: 4px;">Order Frequency by Cohort Month</h4>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">Avg. orders/user/month</p>
+                    <canvas id="frequencyChart" height="220"></canvas>
+                </div>
+            </div>
+
+            <div class="glass-card" style="padding: 30px; margin-bottom: 40px; overflow-x: auto;">
+                <h4 style="margin-bottom: 4px;">Monthly Retention Heatmap</h4>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 24px;">% of cohort still ordering by month</p>
+                <table class="premium-table">
+                    <thead>
+                        <tr>
+                            <th>Cohort</th><th>M0</th><th>M1</th><th>M2</th><th>M3</th><th>M4</th><th>M5</th><th>M6</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cohortTableBody"></tbody>
+                </table>
+            </div>
+
+            <div class="glass-card bg-zomato" style="padding: 30px; display: flex; align-items: center; gap: 40px;">
+                <div style="flex: 1;">
+                    <h3 style="margin-bottom: 12px; font-size: 1.8rem;">The M3 Cliff Insight</h3>
+                    <p style="color: rgba(255,255,255,0.8); font-size: 1.05rem; line-height: 1.7;">
+                        31% of non-Gold users churn between M2 and M3. This is the "novelty wear-off" phase. The window between M1 and M3 is when Gold trial conversion must happen. If we secure a Gold subscription before M3, that single user's 6-month order volume effectively triples.
+                    </p>
+                </div>
+                <div style="flex: 1;">
+                    <canvas id="ltvChart" height="150"></canvas>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- STRATEGY & ROADMAP -->
+        <section class="container reveal">
+            <div class="section-header">
+                <span class="num">04</span>
+                <h2>Product Roadmap CY2026</h2>
+                <p>Six prioritised initiatives synthesised from funnel leaks and cohort findings, mapped against impact, effort, and the OKR they address.</p>
+            </div>
+
+            <div class="grid grid-cols-2" style="gap: 40px; align-items: start;">
+                <div class="glass-card" style="padding: 30px;">
+                    <h4 style="margin-bottom: 4px;">Prioritization Matrix</h4>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 30px;">Impact vs Effort scattering</p>
+                    <canvas id="matrixChart" height="300"></canvas>
+                </div>
+                
+                <div>
+                    <h3 style="margin-bottom: 24px;">Execution Milestones</h3>
+                    <div class="timeline-item">
+                        <div class="badge" style="margin-bottom: 8px;">Q1 2026</div>
+                        <h4 style="margin-bottom: 8px;">Foundation & Quick Wins</h4>
+                        <p style="color: var(--text-muted); font-size: 0.95rem;">Ship contextual Gold trial trigger at 5th order. Launch silent UPI retry flow to patch checkout leaks. Target: Checkout CVR +5pp.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="badge" style="margin-bottom: 8px;">Q2 2026</div>
+                        <h4 style="margin-bottom: 8px;">The Intelligence Layer</h4>
+                        <p style="color: var(--text-muted); font-size: 0.95rem;">Launch AI menu highlights in top Tier-1 cities and A/B test personalized discovery feed substituting static top-10 list.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="badge" style="margin-bottom: 8px;">Q3 2026</div>
+                        <h4 style="margin-bottom: 8px;">Retention & Operational Scale</h4>
+                        <p style="color: var(--text-muted); font-size: 0.95rem;">Deploy ML early-churn prediction model triggering targeted 14-day win-back campaigns. Dynamic ETA comms rollout.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 80px; padding: 60px 0; border-top: 1px solid rgba(255,255,255,0.05);">
+                <p style="color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; margin-bottom: 16px;">North Star Metric</p>
+                <h2 style="font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 24px;">Weekly Active Orderers <br><span style="color: #E23744;">(Tier-1)</span></h2>
+                <p style="max-width: 600px; margin: 0 auto; color: var(--text-muted); font-size: 1.1rem;">
+                    Every initiative serves a single question: are more users ordering Zomato at least once a week? Frequency is the ultimate indicator of LTV and defensibility.
+                </p>
+            </div>
+        </section>
+
+    </div> <!-- END page-wrapper -->
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <div class="social-links">
+                <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+                <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                <a href="#"><i class="fa-brands fa-github"></i></a>
+                <a href="#"><i class="fa-solid fa-envelope"></i></a>
+            </div>
+            <p>&copy; 2026 Vishwajit Lad. Associate Product Manager & AI Expert. Mumbai, India.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        // ---- CHART DEFAULTS & GLOBAL ALIGNMENT ----
+        Chart.defaults.color = 'rgba(255,255,255,0.6)';
+        Chart.defaults.font.family = "'Inter', sans-serif";
+        Chart.defaults.font.size = 11;
+
+        const RED = '#E23744';
+        const ORANGE = '#FF6B35';
+        const YELLOW = '#FFD166';
+        const GREEN = '#06D6A0';
+        const BLUE = '#00f5ff'; // adapted to cyan
+        const MUTED = 'rgba(255,255,255,0.2)';
+
+        // 1. Funnel Drop Chart
+        new Chart(document.getElementById('funnelDropChart'), {
+          type: 'bar',
+          data: {
+            labels: ['App→Home', 'Home→Rest.', 'Rest.→Cart', 'Cart→Chck.', 'Chck.→Order', 'Ord.→Del.'],
+            datasets: [{
+              data: [18, 20, 24, 7, 7, 2],
+              backgroundColor: ['#C93040','#C03028','#E23744','#8B2028','#7A1820','#4A1015'],
+              borderRadius: 6,
+            }]
+          },
+          options: {
+            plugins: { legend: { display: false } },
+            scales: {
+              x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { font: { size: 10 } } },
+              y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { callback: v => v+'%' } }
+            }
+          }
+        });
+
+        // 2. Segment Chart
+        new Chart(document.getElementById('segmentChart'), {
+          type: 'bar',
+          data: {
+            labels: ['Gold', 'Power', 'Casual', 'New', 'Lapsed'],
+            datasets: [{
+              label: 'Cart Conversion %',
+              data: [68, 54, 38, 29, 22],
+              backgroundColor: [GREEN, '#06B88A', ORANGE, RED, '#8B1D28'],
+              borderRadius: 5,
+            }]
+          },
+          options: {
+            indexAxis: 'y',
+            plugins: { legend: { display: false } },
+            scales: {
+              x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { callback: v => v+'%' } },
+              y: { grid: { color: 'rgba(255,255,255,0.05)' } }
+            }
+          }
+        });
+
+        // 4. Retention Chart
+        new Chart(document.getElementById('retentionChart'), {
+          type: 'line',
+          data: {
+            labels: ['M0','M1','M2','M3','M4','M5','M6'],
+            datasets: [
+              { label: 'Gold Subs', data: [100, 91, 88, 86, 83, 81, 79], borderColor: GREEN, backgroundColor: 'rgba(6,214,160,0.1)', fill: true, tension: 0.4, borderWidth: 2.5 },
+              { label: 'Non-Gold', data: [100, 72, 54, 41, 34, 29, 26], borderColor: RED, backgroundColor: 'rgba(226,55,68,0.1)', fill: true, tension: 0.4, borderWidth: 2.5 }
+            ]
+          },
+          options: {
+            plugins: { legend: { labels: { boxWidth: 12 } } },
+            scales: {
+              x: { grid: { color: 'rgba(255,255,255,0.05)' } },
+              y: { min: 0, max: 100, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { callback: v => v+'%' } }
+            }
+          }
+        });
+
+        // 5. Frequency Chart
+        new Chart(document.getElementById('frequencyChart'), {
+          type: 'bar',
+          data: {
+            labels: ['M0','M1','M2','M3','M4','M5','M6'],
+            datasets: [
+              { label: 'Gold', data: [2.1, 3.8, 4.2, 4.6, 4.9, 5.1, 5.2], backgroundColor: GREEN, borderRadius: 4 },
+              { label: 'Non-Gold', data: [1.9, 2.8, 2.6, 2.2, 2.0, 1.8, 1.6], backgroundColor: 'rgba(226,55,68,0.6)', borderRadius: 4 }
+            ]
+          },
+          options: {
+            plugins: { legend: { labels: { boxWidth: 12 } } },
+            scales: {
+              x: { grid: { color: 'rgba(255,255,255,0.05)' } },
+              y: { grid: { color: 'rgba(255,255,255,0.05)' }, title: { display: true, text: 'Orders/user/month' } }
+            }
+          }
+        });
+
+        // 6. Cohort Table Data
+        const cohorts = [
+          { name: 'Jan 25', vals: [100, 68, 52, 41, 35, 31, 28] },
+          { name: 'Feb 25', vals: [100, 71, 55, 44, 38, 33, 30] },
+          { name: 'Mar 25', vals: [100, 69, 54, 43, 36, 32, null] },
+          { name: 'Apr 25', vals: [100, 74, 58, 47, 40, null, null] },
+          { name: 'May 25', vals: [100, 72, 56, 45, null, null, null] },
+          { name: 'Jun 25', vals: [100, 75, 60, null, null, null, null] },
+          { name: 'Jul 25', vals: [100, 77, null, null, null, null, null] },
+          { name: 'Aug 25', vals: [100, null, null, null, null, null, null] },
+        ];
+
+        function getColor(val) {
+          if (val === null) return 'background:rgba(255,255,255,0.02);color:rgba(255,255,255,0.2);';
+          if (val >= 80) return `background:rgba(6,214,160,0.25);color:#06D6A0;`;
+          if (val >= 60) return `background:rgba(6,214,160,0.12);color:#06B88A;`;
+          if (val >= 45) return `background:rgba(255,209,102,0.15);color:#FFD166;`;
+          if (val >= 35) return `background:rgba(226,55,68,0.3);color:#FF6B35;`;
+          return `background:rgba(226,55,68,0.2);color:#E23744;`;
+        }
+
+        const tbody = document.getElementById('cohortTableBody');
+        cohorts.forEach(c => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td><strong>${c.name}</strong></td>` + c.vals.map(v =>
+            `<td><span class="cohort-cell" style="${getColor(v)}">${v !== null ? v+'%' : '—'}</span></td>`
+          ).join('');
+          tbody.appendChild(tr);
+        });
+
+        // 7. LTV Chart
+        new Chart(document.getElementById('ltvChart'), {
+          type: 'line',
+          data: {
+            labels: ['M1','M2','M3','M4','M5','M6'],
+            datasets: [
+              { label: 'Gold LTV', data: [280,560,860,1170,1490,1820], borderColor: GREEN, fill: false, tension: 0.4, borderWidth: 2 },
+              { label: 'Non-Gold LTV', data: [210,380,490,560,610,650], borderColor: RED, fill: false, tension: 0.4, borderWidth: 2 },
+            ]
+          },
+          options: {
+            plugins: { legend: { display: false } },
+            scales: {
+              x: { grid: { color: 'rgba(255,255,255,0.05)' } },
+              y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { callback: v => '₹'+v } }
+            }
+          }
+        });
+
+        // 8. Impact Matrix
+        new Chart(document.getElementById('matrixChart'), {
+          type: 'scatter',
+          data: {
+            datasets: [{
+              label: 'Initiatives',
+              data: [
+                {x: 2, y: 9, label: 'Gold Trigger'},
+                {x: 2, y: 8, label: 'UPI Retry'},
+                {x: 5, y: 9, label: 'AI Menu'},
+                {x: 5, y: 8.5, label: 'Feed'},
+                {x: 8, y: 7, label: 'Churn ML'},
+                {x: 5, y: 7.5, label: 'Dynamic ETA'},
+              ],
+              backgroundColor: [RED, RED, ORANGE, ORANGE, BLUE, GREEN],
+              pointRadius: 10,
+              pointHoverRadius: 14,
+            }]
+          },
+          options: {
+            plugins: {
+              legend: { display: false },
+              tooltip: { callbacks: { label: ctx => ctx.raw.label + ` (Impact: ${ctx.raw.y}/10)` } }
+            },
+            scales: {
+              x: { title: { display: true, text: 'Effort', color: '#888' }, min: 0, max: 10, grid: { color: 'rgba(255,255,255,0.05)' } },
+              y: { title: { display: true, text: 'Impact', color: '#888' }, min: 0, max: 10, grid: { color: 'rgba(255,255,255,0.05)' } }
+            }
+          },
+          plugins: [{
+            afterDraw: chart => {
+              const ctx = chart.ctx;
+              chart.data.datasets[0].data.forEach((pt, i) => {
+                const meta = chart.getDatasetMeta(0).data[i];
+                ctx.save();
+                ctx.font = '500 11px Inter';
+                ctx.fillStyle = 'rgba(255,255,255,0.7)';
+                ctx.textAlign = 'center';
+                ctx.fillText(pt.label, meta.x, meta.y - 14);
+                ctx.restore();
+              });
+            }
+          }]
+        });
+    </script>
+</body>
+</html>

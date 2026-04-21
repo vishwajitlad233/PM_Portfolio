@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PM Prompt Architect — V2 | Vishwajit Lad</title>
+<link rel="stylesheet" href="css/style.css?v=3">
+<link rel="stylesheet" href="css/animations.css">
+<link rel="stylesheet" href="css/components.css?v=3">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --mono: 'JetBrains Mono', monospace;
+    --glass-bg: rgba(15, 15, 20, 0.4);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-shadow: 0 30px 60px rgba(0,0,0,0.4);
+  }
+  
+  /* AURORA BACKGROUND */
+  .aurora-wrapper {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: -1; overflow: hidden; pointer-events: none;
+    background: var(--bg-dark);
+  }
+  .aurora {
+    position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.15;
+    animation: drift 20s infinite alternate ease-in-out;
+  }
+  .aurora.cyan {
+    width: 600px; height: 600px; background: var(--accent-cyan);
+    top: -10%; left: -10%;
+  }
+  .aurora.violet {
+    width: 800px; height: 800px; background: var(--accent-violet);
+    bottom: -20%; right: -10%; animation-delay: -10s;
+  }
+  @keyframes drift {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(100px, 150px) scale(1.2); }
+  }
+
+  /* MACRO LAYOUT */
+  .page-wrapper {
+    padding-top: 100px;
+    padding-bottom: 100px;
+    overflow-x: hidden;
+  }
+  .cyber-chip {
+    font-family: var(--mono); font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--accent-cyan); padding: 8px 16px; border: 1px solid rgba(0, 245, 255, 0.3);
+    border-radius: 100px; display: inline-block; margin-bottom: 24px;
+    background: rgba(0, 245, 255, 0.05);
+  }
+  .mega-title {
+    font-family: var(--font-heading); font-size: clamp(4rem, 8vw, 8rem);
+    font-weight: 700; line-height: 0.95; letter-spacing: -0.04em;
+    color: #fff; margin-bottom: 30px;
+  }
+  .mega-title span { background: linear-gradient(135deg, var(--accent-cyan), var(--accent-violet)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  
+  .glass-panel {
+    background: var(--glass-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--glass-border); border-radius: 24px;
+    padding: 40px; box-shadow: var(--glass-shadow);
+    transition: transform 0.4s, border-color 0.4s;
+  }
+  .glass-panel:hover { border-color: rgba(0,245,255,0.3); transform: translateY(-5px); }
+
+  h2.section-title { font-family: var(--font-heading); font-size: clamp(2.5rem, 4vw, 3.5rem); letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 40px; max-width: 800px; }
+  h2.section-title em { color: var(--accent-cyan); font-style: normal; }
+
+  /* HERO SPLIT */
+  .hero-split { display: grid; grid-template-columns: 1fr 1.1fr; gap: 4rem; min-height: 90vh; align-items: center; padding-top: 60px; }
+  .hero-sub { font-size: 1.25rem; color: var(--text-muted); line-height: 1.6; max-width: 500px; margin-bottom: 40px; }
+  
+  .hero-stats { display: flex; gap: 40px; }
+  .hero-stats .val { font-family: var(--mono); font-size: 3rem; font-weight: 700; color: var(--accent-cyan); line-height: 1; }
+  .hero-stats .lbl { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-top: 8px; }
+
+  /* HERO MOCKUP (V2) */
+  .hero-mockup-wrapper { perspective: 2000px; width: 100%; }
+  .mockup-container {
+    background: rgba(10,10,12,0.8); backdrop-filter: blur(40px);
+    border: 1px solid rgba(0,245,255,0.2); border-radius: 20px;
+    box-shadow: 0 50px 100px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,245,255,0.1) inset;
+    transform: rotateY(-10deg) rotateX(5deg) scale(0.95);
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    overflow: hidden;
+  }
+  .hero-mockup-wrapper:hover .mockup-container { transform: rotateY(0deg) rotateX(0deg) scale(1); }
+  
+  /* MOCKUP INTERNALS */
+  .mockup-topbar { padding: 16px 24px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); }
+  .mockup-topbar span { font-family: var(--mono); font-size: 10px; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; }
+  .mockup-dots { display: flex; gap: 8px; }
+  .mockup-dots span { width: 12px; height: 12px; border-radius: 50%; background: var(--glass-border); }
+  
+  .mockup-body { padding: 32px; min-height: 480px; display: flex; flex-direction: column; }
+  /* Make JS inject styles into mockup */
+  .mock-progress { width: 100%; height: 2px; background: rgba(255,255,255,0.1); margin-bottom: 32px; border-radius: 2px; }
+  .mock-progress-fill { height: 100%; background: var(--accent-cyan); box-shadow: 0 0 10px var(--accent-cyan); transition: width 0.4s; }
+  .mock-step-label { font-family: var(--mono); font-size: 12px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px; display: flex; justify-content: space-between; }
+  .mock-question { font-family: var(--font-heading); font-size: 2rem; color: #fff; margin-bottom: 12px; letter-spacing: -0.02em; }
+  .mock-sub { font-size: 1rem; color: var(--text-muted); margin-bottom: 32px; }
+  
+  .mock-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; mb-4; }
+  .mock-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.2s; }
+  .mock-card:hover { border-color: rgba(0,245,255,0.4); background: rgba(0,245,255,0.05); }
+  .mock-card.active { border-color: var(--accent-cyan); background: rgba(0,245,255,0.1); box-shadow: inset 0 0 0 1px var(--accent-cyan); }
+  .mock-card-label { font-size: 1.1rem; font-weight: 600; color: #fff; margin-bottom: 4px; }
+  .mock-card-desc { font-size: 0.85rem; color: var(--text-muted); }
+  
+  .mock-textarea { width: 100%; height: 140px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; color: #fff; font-family: var(--font-body); font-size: 1rem; resize: none; margin-bottom: 20px; line-height: 1.6; outline: none; }
+  .mock-textarea:focus { border-color: var(--accent-cyan); }
+  .mock-upload-zone { border: 1px dashed rgba(255,255,255,0.2); border-radius: 12px; padding: 24px; text-align: center; color: var(--text-muted); cursor: pointer; transition: 0.2s; }
+  .mock-upload-zone:hover { border-color: var(--accent-cyan); color: var(--accent-cyan); background: rgba(0,245,255,0.02); }
+  
+  .mock-btn-row { display: flex; justify-content: flex-end; gap: 16px; margin-top: auto; padding-top: 32px; }
+  .mock-btn { padding: 12px 28px; border-radius: 100px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: 0.2s; font-family: var(--font-body); border: none; }
+  .mock-btn-secondary { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+  .mock-btn-secondary:hover { border-color: #fff; }
+  .mock-btn-primary { background: var(--accent-cyan); color: #000; box-shadow: 0 0 20px rgba(0,245,255,0.3); }
+  .mock-btn-primary:hover { box-shadow: 0 0 30px rgba(0,245,255,0.5); transform: translateY(-2px); }
+  
+  .mock-output { background: rgba(0,0,0,0.5); border: 1px solid rgba(0,245,255,0.3); padding: 24px; border-radius: 12px; color: var(--accent-cyan); font-family: var(--mono); font-size: 0.85rem; line-height: 1.6; height: 300px; overflow-y: auto; white-space: pre-wrap; }
+
+  /* BENTO GRID (5 LAYERS) */
+  .bento-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 60px; }
+  .bento-item { position: relative; overflow: hidden; display: flex; flex-direction: column; }
+  .bento-item.tall { grid-row: span 2; }
+  .bento-item.wide { grid-column: span 2; }
+  .bento-label { font-family: var(--mono); font-size: 0.75rem; color: var(--accent-cyan); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; }
+  .bento-title { font-size: 1.5rem; font-weight: 600; color: #fff; margin-bottom: 12px; }
+  .bento-desc { color: var(--text-muted); line-height: 1.6; font-size: 0.95rem; }
+
+  /* PIPELINE HORIZONTAL */
+  .arch-pipeline { display: flex; justify-content: space-between; position: relative; margin-top: 80px; padding: 40px 0; }
+  .arch-pipeline::before { content:''; position: absolute; left: 0; right: 0; top: 72px; height: 2px; background: linear-gradient(90deg, rgba(0,245,255,0.1), var(--accent-cyan), rgba(0,245,255,0.1)); z-index: 1; }
+  .arch-node { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; text-align: center; flex: 1; padding: 0 16px; }
+  .arch-dot { width: 64px; height: 64px; border-radius: 50%; background: var(--bg-dark); border: 2px solid var(--accent-cyan); display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 1.25rem; color: #fff; margin-bottom: 24px; box-shadow: 0 0 30px rgba(0,245,255,0.2); transition: 0.3s; }
+  .arch-node:hover .arch-dot { transform: scale(1.1); box-shadow: 0 0 40px rgba(0,245,255,0.4); background: rgba(0,245,255,0.1); }
+  .arch-title { font-weight: 600; color: #fff; margin-bottom: 8px; font-size: 1.1rem; }
+  .arch-text { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
+
+  /* SKILLS TAGS */
+  .skill-pills { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+  .skill-pill { padding: 10px 20px; border-radius: 100px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); font-size: 0.9rem; transition: 0.3s; }
+  .skill-pill:hover { color: #fff; border-color: var(--accent-violet); background: rgba(167, 139, 250, 0.1); }
+
+  @media (max-width: 1024px) {
+    .hero-split { grid-template-columns: 1fr; text-align: center; gap: 3rem; }
+    .hero-stats { justify-content: center; }
+    .bento-grid { grid-template-columns: 1fr 1fr; }
+    .arch-pipeline { flex-direction: column; gap: 40px; }
+    .arch-pipeline::before { width: 2px; height: 100%; top: 0; left: 50%; transform: translateX(-50%); }
+    .bento-item.wide, .bento-item.tall { grid-column: span 1; grid-row: span 1; }
+  }
+  @media (max-width: 768px) {
+    .bento-grid { grid-template-columns: 1fr; }
+    .mega-title { font-size: 3.5rem; }
+    .mock-cards { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="aurora-wrapper">
+  <div class="aurora cyan"></div>
+  <div class="aurora violet"></div>
+</div>
+
+<nav class="navbar">
+    <div class="container nav-container">
+        <a href="../index.html" class="nav-logo"><i class="fa-solid fa-brain"></i> PM<span>.AI</span></a>
+        <ul class="nav-links">
+            <li><a href="../index.html" class="active" style="border: 1px solid rgba(0,245,255,0.3); padding: 8px 16px; border-radius: 20px;">← Back to Portfolio</a></li>
+        </ul>
+    </div>
+</nav>
+
+<div class="page-wrapper">
+  
+  <!-- HERO (Awwwards 2-Col Split) -->
+  <section class="container hero-split">
+    <div class="hero-left reveal">
+      <div class="cyber-chip">Product Strategy Case Study</div>
+      <h1 class="mega-title">Prompt<br><span>Architect</span></h1>
+      <p class="hero-sub">Most PMs translate barely 30% of their vision into AI prompts. I built a 5-layer intelligence pipeline that extracts 100%, turning vague ideas into perfect production code.</p>
+      
+      <div class="hero-stats">
+        <div><div class="val">5</div><div class="lbl">Intelligence Layers</div></div>
+        <div><div class="val">10</div><div class="lbl">Smart Constraints</div></div>
+        <div><div class="val">1</div><div class="lbl">Perfect Prompt</div></div>
+      </div>
+    </div>
+    
+    <div class="hero-right reveal delay-200">
+      <div class="hero-mockup-wrapper">
+        <div class="mockup-container" id="mockup">
+          <div class="mockup-topbar">
+            <span>PM Prompt Generator</span>
+            <div class="mockup-dots"><span></span><span></span><span></span></div>
+          </div>
+          <div class="mockup-body" id="mockup-body">
+            <!-- JS Injection -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE PROBLEM (Gigantic Quote) -->
+  <section class="container" style="padding: 120px 0;">
+    <div class="glass-panel reveal" style="text-align: center; padding: 80px 40px; border-left: 4px solid var(--accent-cyan); border-radius: 4px 24px 24px 4px;">
+      <h2 style="font-family: var(--font-heading); font-size: clamp(2rem, 3vw, 2.5rem); font-weight: 500; font-style: italic; color: #fff; line-height: 1.4; max-width: 900px; margin: 0 auto;">
+        "I know exactly what I want—Apple-style scroll animations, dark theme, floating product hero. But when I type it into Cursor, I get a generic blue landing page with no animations. Every. Single. Time."
+      </h2>
+      <p style="color: var(--accent-cyan); font-family: var(--mono); text-transform: uppercase; letter-spacing: 2px; margin-top: 30px; font-size: 0.85rem;">— 80% of Non-Technical PMs</p>
+    </div>
+  </section>
+
+  <!-- BENTO FRAMEWORK -->
+  <section class="container" style="padding-bottom: 120px;">
+    <div class="cyber-chip reveal">The Architecture</div>
+    <h2 class="section-title reveal">Every perfect prompt requires <em>5 Dimensions.</em></h2>
+    
+    <div class="bento-grid reveal delay-100">
+      <!-- L1 -->
+      <div class="glass-panel bento-item wide">
+        <div class="bento-label">Layer 01</div>
+        <h3 class="bento-title">Role & Context</h3>
+        <p class="bento-desc">Who you are, company stage, and product type. A seed-stage startup PM and a Series-D enterprise PM require fundamentally different documentation structures, engineering guardrails, and tones. We enforce context before constraints.</p>
+      </div>
+      
+      <!-- L3 (Tall) -->
+      <div class="glass-panel bento-item tall" style="background: linear-gradient(180deg, rgba(167, 139, 250, 0.05), rgba(0, 0, 0, 0.4)); border-color: rgba(167, 139, 250, 0.2);">
+        <div class="bento-label" style="color: var(--accent-violet);">Layer 03</div>
+        <h3 class="bento-title">Style & Aesthetic Core</h3>
+        <p class="bento-desc" style="margin-bottom: 30px;">This is where vague terms like <em>"make it look premium like Apple"</em> are intercepted and translated mathematically. We extract:</p>
+        <ul style="color: var(--text-muted); padding-left: 20px; line-height: 1.8; font-size: 0.9rem;">
+          <li>Inter / SF Pro font stacks</li>
+          <li>300ms cubic-bezier transitions</li>
+          <li>Extreme whitespace padding variables</li>
+          <li>Monochromatic contrast ratios</li>
+        </ul>
+      </div>
+
+      <!-- L2 -->
+      <div class="glass-panel bento-item">
+        <div class="bento-label">Layer 02</div>
+        <h3 class="bento-title">Goal Delivery</h3>
+        <p class="bento-desc">The structural backbone. What exact output is needed, mapped directly to success criteria.</p>
+      </div>
+
+      <!-- L4 -->
+      <div class="glass-panel bento-item">
+        <div class="bento-label">Layer 04</div>
+        <h3 class="bento-title">Tech Constraint</h3>
+        <p class="bento-desc">Targeting Cursor needs file-tree logic. v0.dev needs Tailwind utility classes. The prompt adapts.</p>
+      </div>
+      
+      <!-- L5 -->
+      <div class="glass-panel bento-item wide">
+        <div class="bento-label">Layer 05</div>
+        <h3 class="bento-title">Audience & Edge Cases</h3>
+        <p class="bento-desc">Separating a toy demo from a production-ready feature. Who sees this? Anticipating empty states, responsive bounds, error fallbacks, and user latency expectations.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ENGINEERING PIPELINE -->
+  <section class="container" style="padding-bottom: 120px;">
+    <div class="cyber-chip reveal">System Design</div>
+    <h2 class="section-title reveal">The 5-Step <em>Intelligence Pipeline.</em></h2>
+    <p class="hero-sub reveal" style="max-width: 600px;">Not a template stitcher. This is an autonomous reasoning engine built into the LLM system prompt that analyzes user input before generating a single line of code.</p>
+
+    <div class="arch-pipeline reveal delay-200">
+      <div class="arch-node">
+        <div class="arch-dot">1</div>
+        <div class="arch-title">Interpret</div>
+        <div class="arch-text">Translate vague PM desires into technical specs.</div>
+      </div>
+      <div class="arch-node">
+        <div class="arch-dot">2</div>
+        <div class="arch-title">Detect Gaps</div>
+        <div class="arch-text">Identify missing UX pieces (empty states, CTA) and inject defaults.</div>
+      </div>
+      <div class="arch-node">
+        <div class="arch-dot">3</div>
+        <div class="arch-title">Anti-Patterns</div>
+        <div class="arch-text">Spot UI contradictions (e.g., brutalist + soft shadows).</div>
+      </div>
+      <div class="arch-node">
+        <div class="arch-dot">4</div>
+        <div class="arch-title">Localize</div>
+        <div class="arch-text">Format purely for the target tool engine (Cursor vs v0).</div>
+      </div>
+      <div class="arch-node">
+        <div class="arch-dot">5</div>
+        <div class="arch-title">Self-Check</div>
+        <div class="arch-text">Validate against the original 5 requirements.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS AND DECISIONS -->
+  <section class="container" style="padding-bottom: 160px;">
+    <div class="cyber-chip reveal" style="border-color: rgba(167, 139, 250, 0.4); color: var(--accent-violet);">PM Execution</div>
+    <h2 class="section-title reveal">What this proves.</h2>
+    
+    <div class="glass-panel reveal delay-100" style="margin-bottom: 40px;">
+      <h3 style="color: #fff; margin-bottom: 16px; font-size: 1.4rem;">Key PM Decisions Made</h3>
+      <p style="color: var(--text-muted); line-height: 1.7; margin-bottom: 24px;">I initially tried building a rigid API backend to combine prompt layers. Validation via <strong>Grok</strong> and <strong>Claude</strong> stressed that use cases varied too wildly. So, I pivoted heavily towards a <em>Prompt Sensitivity Filter</em>—abandoning simple brainstorming tasks to focus 100% on high-value, high-complexity tasks (prototypes, competitive tear-downs, PRDs).</p>
+      
+      <div class="skill-pills">
+        <div class="skill-pill">Prompt Sensitivity Filtering</div>
+        <div class="skill-pill">Multi-AI Workflow Design</div>
+        <div class="skill-pill">Problem-Solution Inversion</div>
+        <div class="skill-pill">LLM Token Budgeting</div>
+        <div class="skill-pill">Product Architecture</div>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /page-wrapper -->
+
+<footer>
+    <div class="container">
+        <p>&copy; 2026 Vishwajit Lad. Associate Product Manager & AI Expert. Mumbai, India.</p>
+    </div>
+</footer>
+<script src="js/main.js"></script>
+
+<!-- ═══ INTERACTIVE DEMO JS ═══ -->
+<script>
+const DEMO_STEPS = [
+  {
+    step: "QUESTION 1 OF 10",
+    layer: "Layer 2: Goal & Deliverable",
+    q: "What are you building?",
+    sub: "Describe your full vision — product, style, unique elements, visual references.",
+    type: "textarea",
+    placeholder: "A landing page for a gaming headphone brand called 'NOVA Sound' with Apple-style scroll-triggered animations, dark theme, floating 3D headphone hero...",
+    hasUpload: true,
+    uploadLabel: "Have a wireframe or reference screenshot? Drop it here"
+  },
+  {
+    step: "QUESTION 2 OF 10",
+    layer: "Layer 4: Technical Constraints",
+    q: "Which tool will you use?",
+    sub: "This determines how we optimize the prompt syntax.",
+    type: "cards",
+    options: [
+      { label: "Cursor", desc: "AI code editor", active: false },
+      { label: "v0.dev", desc: "Paste description, get UI", active: true },
+      { label: "Lovable", desc: "AI app builder", active: false },
+      { label: "Claude Artifact", desc: "In-chat builder", active: false },
+      { label: "Figma", desc: "Design spec", active: false },
+      { label: "Antigravity", desc: "No-code builder", active: false },
+    ]
+  },
+  {
+    step: "QUESTION 5 OF 10",
+    layer: "Layer 3: Style & Tone",
+    q: "What should it look & feel like?",
+    sub: "Pick the vibe closest to what you're imagining.",
+    type: "cards",
+    options: [
+      { label: "Clean & Minimal", desc: "Like Apple — white space, elegant", active: true },
+      { label: "Professional & Sharp", desc: "Like Linear — dark, crisp", active: false },
+      { label: "Soft & Friendly", desc: "Like Notion — warm, rounded", active: false },
+      { label: "Dark & Neon", desc: "Glowing accents, futuristic", active: true },
+    ],
+    hasUpload: true,
+    uploadLabel: "Drop a screenshot or mood board as visual reference"
+  },
+  {
+    step: "REVIEW ALL INPUTS",
+    layer: "All 5 Layers Captured",
+    q: "Everything look right?",
+    sub: "Click any row to edit. Then generate.",
+    type: "review"
+  },
+  {
+    step: "PROMPT GENERATED",
+    layer: "✓ Complete",
+    q: "Your Mega-Prompt",
+    sub: "Ready to copy-paste into v0.dev",
+    type: "output"
+  }
+];
+
+let currentDemo = 0;
+
+function renderDemo(idx) {
+  const s = DEMO_STEPS[idx];
+  const body = document.getElementById('mockup-body');
+  const progress = ((idx + 1) / DEMO_STEPS.length) * 100;
+
+  let html = `<div class="mock-progress"><div class="mock-progress-fill" style="width:${progress}%"></div></div>`;
+  html += `<div class="mock-step-label" style="display:flex;justify-content:space-between;"><span>${s.step}</span><span style="color:var(--accent)">${s.layer}</span></div>`;
+  html += `<div class="mock-question">${s.q}</div>`;
+  html += `<div class="mock-sub">${s.sub}</div>`;
+
+  if (s.type === "textarea") {
+    html += `<textarea class="mock-textarea" placeholder="${s.placeholder}" readonly>${s.placeholder}</textarea>`;
+    if (s.hasUpload) {
+      html += `<div class="mock-upload-zone"><div class="mock-upload-text">${s.uploadLabel}</div><div class="mock-upload-hint">Screenshots, wireframes, brand docs — max 3 files</div></div>`;
+    }
+  } else if (s.type === "cards") {
+    html += `<div class="mock-cards">`;
+    s.options.forEach(o => {
+      html += `<div class="mock-card ${o.active ? 'active' : ''}"><div class="mock-card-label">${o.label}</div><div class="mock-card-desc">${o.desc}</div></div>`;
+    });
+    html += `</div>`;
+    if (s.hasUpload) {
+      html += `<div class="mock-upload-zone" style="margin-top:14px"><div class="mock-upload-text">${s.uploadLabel}</div><div class="mock-upload-hint">PNG, JPEG, PDF — max 5MB each</div></div>`;
+    }
+  } else if (s.type === "review") {
+    const rows = [
+      { l: "L2", c: "var(--blue)", label: "Vision", val: "Gaming headphone landing page with Apple-style animations... (+1 file)" },
+      { l: "L4", c: "var(--green)", label: "Tool", val: "v0.dev" },
+      { l: "L2", c: "var(--blue)", label: "Type", val: "Landing Page" },
+      { l: "L3", c: "var(--purple)", label: "Style", val: "Clean & Minimal, Dark & Neon (+1 reference)" },
+      { l: "L3", c: "var(--purple)", label: "Animations", val: "Things appear as I scroll, Buttons react to mouse, Depth while scrolling" },
+      { l: "L4", c: "var(--green)", label: "Tech", val: "React + Tailwind CSS (recommended)" },
+      { l: "L5", c: "var(--red)", label: "Audience", val: "Investors / Pitch Demo" },
+      { l: "L5", c: "var(--red)", label: "Edge Cases", val: "Work on mobile, Use realistic fake data" },
+    ];
+    html += `<div style="display:flex;flex-direction:column;gap:6px;">`;
+    rows.forEach(r => {
+      html += `<div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:8px;">
+        <span style="font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:4px;background:${r.c}15;color:${r.c}">${r.l}</span>
+        <span style="font-size:12px;color:var(--sub);width:70px;flex-shrink:0">${r.label}</span>
+        <span style="font-size:13px;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.val}</span>
+        <span style="font-size:12px;color:var(--muted)">Edit ›</span>
+      </div>`;
+    });
+    html += `</div>`;
+  } else if (s.type === "output") {
+    html += `<div class="mock-output">You are an expert v0.dev UI engineer specializing in pixel-perfect,
+production-ready React components with Tailwind CSS.
+
+CONTEXT: Building a premium gaming headphone landing page for
+"NOVA Sound" — targeting investor demo with Apple-level polish.
+
+LAYOUT:
+- Hero: Full-viewport, dark (#0A0A0B) bg, floating 3D headphone
+  centered with subtle rotation on scroll. Large display heading
+  (64px, tracking tight) with accent gradient text.
+- Features: 3-column grid, icons + short copy, scroll-reveal
+  with staggered 0.2s delays using Framer Motion fadeInUp.
+- Social Proof: Horizontal carousel, glass-morphism cards...
+
+STYLE: SF Pro / system font stack, 300ms ease-out transitions,
+dark palette (#0A0A0B bg, #F0F0F0 text, #E8A838 accent)...
+
+[Full prompt continues — 600+ words of specific instructions]</div>`;
+    html += `<div style="margin-top:16px;padding:16px;background:var(--card);border:1px solid var(--border);border-radius:10px;">
+      <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:8px">Why This Prompt Works</div>
+      <div style="font-size:13px;color:var(--sub);line-height:1.7">• Specifies exact animation timing (300ms ease-out) — prevents default jarring transitions<br>• Includes real color hex values — AI won't default to generic blue<br>• Defines component hierarchy — v0 generates structured, not spaghetti code<br>• Audience context (investor demo) shifts emphasis to visual polish over functionality</div>
+    </div>`;
+  }
+
+  // Navigation buttons
+  html += `<div class="mock-btn-row">`;
+  if (idx > 0) html += `<button class="mock-btn mock-btn-secondary" onclick="navDemo(-1)">← Back</button>`;
+  if (idx < DEMO_STEPS.length - 1) {
+    html += `<button class="mock-btn mock-btn-primary" onclick="navDemo(1)">${idx === DEMO_STEPS.length - 2 ? 'Generate ⚡' : 'Next →'}</button>`;
+  } else {
+    html += `<button class="mock-btn mock-btn-primary" onclick="navDemo(-${DEMO_STEPS.length - 1})">Start Over</button>`;
+  }
+  html += `</div>`;
+
+  body.innerHTML = html;
+}
+
+function navDemo(dir) {
+  currentDemo = Math.max(0, Math.min(DEMO_STEPS.length - 1, currentDemo + dir));
+  if (dir < -1) currentDemo = 0;
+  renderDemo(currentDemo);
+}
+
+// Initialize demo
+renderDemo(0);
+
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
+
+<script>
+const DEMO_STEPS = [
+  {
+    step: "QUESTION 1 OF 10",
+    layer: "Layer 2: Goal & Deliverable",
+    q: "What are you building?",
+    sub: "Describe your full vision — product, style, unique elements, visual references.",
+    type: "textarea",
+    placeholder: "A landing page for a gaming headphone brand called 'NOVA Sound' with Apple-style scroll-triggered animations, dark theme, floating 3D headphone hero...",
+    hasUpload: true,
+    uploadLabel: "Have a wireframe or reference screenshot? Drop it here"
+  },
+  {
+    step: "QUESTION 2 OF 10",
+    layer: "Layer 4: Technical Constraints",
+    q: "Which tool will you use?",
+    sub: "This determines how we optimize the prompt syntax.",
+    type: "cards",
+    options: [
+      { label: "Cursor", desc: "AI code editor", active: false },
+      { label: "v0.dev", desc: "Paste description, get UI", active: true },
+      { label: "Lovable", desc: "AI app builder", active: false },
+      { label: "Claude Artifact", desc: "In-chat builder", active: false },
+      { label: "Figma", desc: "Design spec", active: false },
+      { label: "Antigravity", desc: "No-code builder", active: false },
+    ]
+  },
+  {
+    step: "QUESTION 5 OF 10",
+    layer: "Layer 3: Style & Tone",
+    q: "What should it look & feel like?",
+    sub: "Pick the vibe closest to what you're imagining.",
+    type: "cards",
+    options: [
+      { label: "Clean & Minimal", desc: "Like Apple — white space, elegant", active: true },
+      { label: "Professional & Sharp", desc: "Like Linear — dark, crisp", active: false },
+      { label: "Soft & Friendly", desc: "Like Notion — warm, rounded", active: false },
+      { label: "Dark & Neon", desc: "Glowing accents, futuristic", active: true },
+    ],
+    hasUpload: true,
+    uploadLabel: "Drop a screenshot or mood board as visual reference"
+  },
+  {
+    step: "REVIEW ALL INPUTS",
+    layer: "All 5 Layers Captured",
+    q: "Everything look right?",
+    sub: "Click any row to edit. Then generate.",
+    type: "review"
+  },
+  {
+    step: "PROMPT GENERATED",
+    layer: "✓ Complete",
+    q: "Your Mega-Prompt",
+    sub: "Ready to copy-paste into v0.dev",
+    type: "output"
+  }
+];
+
+let currentDemo = 0;
+
+function renderDemo(idx) {
+  const s = DEMO_STEPS[idx];
+  const body = document.getElementById('mockup-body');
+  const progress = ((idx + 1) / DEMO_STEPS.length) * 100;
+
+  let html = `<div class="mock-progress"><div class="mock-progress-fill" style="width:${progress}%"></div></div>`;
+  html += `<div class="mock-step-label" style="display:flex;justify-content:space-between;"><span>${s.step}</span><span style="color:var(--accent)">${s.layer}</span></div>`;
+  html += `<div class="mock-question">${s.q}</div>`;
+  html += `<div class="mock-sub">${s.sub}</div>`;
+
+  if (s.type === "textarea") {
+    html += `<textarea class="mock-textarea" placeholder="${s.placeholder}" readonly>${s.placeholder}</textarea>`;
+    if (s.hasUpload) {
+      html += `<div class="mock-upload-zone"><div class="mock-upload-text">${s.uploadLabel}</div><div class="mock-upload-hint">Screenshots, wireframes, brand docs — max 3 files</div></div>`;
+    }
+  } else if (s.type === "cards") {
+    html += `<div class="mock-cards">`;
+    s.options.forEach(o => {
+      html += `<div class="mock-card ${o.active ? 'active' : ''}"><div class="mock-card-label">${o.label}</div><div class="mock-card-desc">${o.desc}</div></div>`;
+    });
+    html += `</div>`;
+    if (s.hasUpload) {
+      html += `<div class="mock-upload-zone" style="margin-top:14px"><div class="mock-upload-text">${s.uploadLabel}</div><div class="mock-upload-hint">PNG, JPEG, PDF — max 5MB each</div></div>`;
+    }
+  } else if (s.type === "review") {
+    const rows = [
+      { l: "L2", c: "var(--blue)", label: "Vision", val: "Gaming headphone landing page with Apple-style animations... (+1 file)" },
+      { l: "L4", c: "var(--green)", label: "Tool", val: "v0.dev" },
+      { l: "L2", c: "var(--blue)", label: "Type", val: "Landing Page" },
+      { l: "L3", c: "var(--purple)", label: "Style", val: "Clean & Minimal, Dark & Neon (+1 reference)" },
+      { l: "L3", c: "var(--purple)", label: "Animations", val: "Things appear as I scroll, Buttons react to mouse, Depth while scrolling" },
+      { l: "L4", c: "var(--green)", label: "Tech", val: "React + Tailwind CSS (recommended)" },
+      { l: "L5", c: "var(--red)", label: "Audience", val: "Investors / Pitch Demo" },
+      { l: "L5", c: "var(--red)", label: "Edge Cases", val: "Work on mobile, Use realistic fake data" },
+    ];
+    html += `<div style="display:flex;flex-direction:column;gap:6px;">`;
+    rows.forEach(r => {
+      html += `<div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:8px;">
+        <span style="font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:4px;background:${r.c}15;color:${r.c}">${r.l}</span>
+        <span style="font-size:12px;color:var(--sub);width:70px;flex-shrink:0">${r.label}</span>
+        <span style="font-size:13px;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.val}</span>
+        <span style="font-size:12px;color:var(--muted)">Edit ›</span>
+      </div>`;
+    });
+    html += `</div>`;
+  } else if (s.type === "output") {
+    html += `<div class="mock-output">You are an expert v0.dev UI engineer specializing in pixel-perfect,
+production-ready React components with Tailwind CSS.
+
+CONTEXT: Building a premium gaming headphone landing page for
+"NOVA Sound" — targeting investor demo with Apple-level polish.
+
+LAYOUT:
+- Hero: Full-viewport, dark (#0A0A0B) bg, floating 3D headphone
+  centered with subtle rotation on scroll. Large display heading
+  (64px, tracking tight) with accent gradient text.
+- Features: 3-column grid, icons + short copy, scroll-reveal
+  with staggered 0.2s delays using Framer Motion fadeInUp.
+- Social Proof: Horizontal carousel, glass-morphism cards...
+
+STYLE: SF Pro / system font stack, 300ms ease-out transitions,
+dark palette (#0A0A0B bg, #F0F0F0 text, #E8A838 accent)...
+
+[Full prompt continues — 600+ words of specific instructions]</div>`;
+    html += `<div style="margin-top:16px;padding:16px;background:var(--card);border:1px solid var(--border);border-radius:10px;">
+      <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:8px">Why This Prompt Works</div>
+      <div style="font-size:13px;color:var(--sub);line-height:1.7">• Specifies exact animation timing (300ms ease-out) — prevents default jarring transitions<br>• Includes real color hex values — AI won't default to generic blue<br>• Defines component hierarchy — v0 generates structured, not spaghetti code<br>• Audience context (investor demo) shifts emphasis to visual polish over functionality</div>
+    </div>`;
+  }
+
+  // Navigation buttons
+  html += `<div class="mock-btn-row">`;
+  if (idx > 0) html += `<button class="mock-btn mock-btn-secondary" onclick="navDemo(-1)">← Back</button>`;
+  if (idx < DEMO_STEPS.length - 1) {
+    html += `<button class="mock-btn mock-btn-primary" onclick="navDemo(1)">${idx === DEMO_STEPS.length - 2 ? 'Generate ⚡' : 'Next →'}</button>`;
+  } else {
+    html += `<button class="mock-btn mock-btn-primary" onclick="navDemo(-${DEMO_STEPS.length - 1})">Start Over</button>`;
+  }
+  html += `</div>`;
+
+  body.innerHTML = html;
+}
+
+function navDemo(dir) {
+  currentDemo = Math.max(0, Math.min(DEMO_STEPS.length - 1, currentDemo + dir));
+  if (dir < -1) currentDemo = 0;
+  renderDemo(currentDemo);
+}
+
+// Initialize demo
+renderDemo(0);
+
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

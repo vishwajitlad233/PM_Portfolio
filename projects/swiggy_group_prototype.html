@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swiggy Group Order Prototype</title>
+    <!-- Inter font to match Swiggy's typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons for Swiggy-like iconography -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* --- Brand Variables --- */
+        :root {
+            --swiggy-orange: #fc8019;
+            --swiggy-orange-dark: #e06d11;
+            --swiggy-orange-light: #fff3e5;
+            --swiggy-dark: #282c3f;
+            --swiggy-text: #3d4152;
+            --swiggy-text-light: #7e808c;
+            --swiggy-text-lighter: #93959f;
+            --swiggy-bg: #f4f4f5;
+            --swiggy-bg-darker: #e9ecee;
+            --swiggy-border: #d4d5d9;
+            --swiggy-border-light: #eaeaec;
+            --swiggy-green: #60b246;
+            --swiggy-red: #ea605b;
+
+            --device-width: 393px;
+            --device-height: 852px;
+            --safe-top: 47px;
+            --safe-bottom: 34px;
+        }
+
+        /* --- Global Reset & Base Styles --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 0;
+            /* Premium Swiggy-inspired mesh gradient background */
+            background-color: #fce2ce;
+            background-image:
+                radial-gradient(at 10% 10%, #ffffff 0px, transparent 50%),
+                radial-gradient(at 90% 90%, #fc801933 0px, transparent 50%),
+                radial-gradient(at 50% 50%, #fff7f0 0px, transparent 50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--swiggy-text);
+            overflow: hidden;
+            /* Prevent body scrolling if scale pushes boundaries */
+        }
+
+        /* --- Mock Device Frame (iPhone 16 Pro) --- */
+        .device-container {
+            width: var(--device-width);
+            height: var(--device-height);
+            background-color: #ffffff;
+            border-radius: 55px;
+            box-shadow: 0 0 0 12px #000, 0 0 0 14px #333, 0 30px 60px rgba(252, 128, 25, 0.15), 0 15px 25px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            /* Scale down so top and bottom don't touch the screen edges */
+            transform: scale(0.82);
+            transform-origin: center center;
+            flex-shrink: 0;
+        }
+
+        /* Dynamic Island Mockup */
+        .dynamic-island {
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 35px;
+            background-color: #000;
+            border-radius: 20px;
+            z-index: 1000;
+        }
+
+        /* Status Bar Mockup */
+        .status-bar {
+            padding: 14px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 999;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--safe-top);
+            color: var(--swiggy-dark);
+            background-color: white;
+            /* Masking layer to prevent scroll bleed */
+            border-top-left-radius: 40px;
+            border-top-right-radius: 40px;
+        }
+
+        .status-icons {
+            display: flex;
+            gap: 6px;
+        }
+
+        /* --- App Container --- */
+        .app-content {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            /* Remove padding-top to prevent background bleed behind the notch */
+            margin-top: var(--safe-top);
+            padding-bottom: calc(var(--safe-bottom) + 80px);
+            /* Leave space for bottom bar */
+            position: relative;
+            background-color: #ffffff;
+        }
+
+        /* Hide scrollbar */
+        .app-content::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* --- Reusable Components --- */
+
+        .divider {
+            height: 12px;
+            background-color: var(--swiggy-bg);
+            width: 100%;
+        }
+
+        .divider-thin {
+            height: 1px;
+            background-color: var(--swiggy-border-light);
+            margin: 0 16px;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 8px;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.1s, opacity 0.2s;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary {
+            background-color: var(--swiggy-green);
+            color: white;
+            padding: 14px 20px;
+            width: 100%;
+        }
+
+        .btn-orange {
+            background-color: var(--swiggy-orange);
+            color: white;
+            padding: 14px 20px;
+            width: 100%;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--swiggy-orange);
+            border: 1px solid var(--swiggy-orange);
+            padding: 12px 20px;
+            width: 100%;
+        }
+
+        /* Add Button */
+        .add-btn {
+            position: relative;
+            width: 96px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--swiggy-border);
+            border-radius: 8px;
+            background: white;
+            color: var(--swiggy-green);
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .add-btn-qty-controls {
+            display: none;
+            width: 100%;
+            height: 100%;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--swiggy-green);
+            color: white;
+            padding: 0 12px;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .add-btn.active .add-btn-text {
+            display: none;
+        }
+
+        .add-btn.active .add-btn-qty-controls {
+            display: flex;
+        }
+
+        .qty-action {
+            cursor: pointer;
+            width: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* --- Typography --- */
+        h1 {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--swiggy-dark);
+        }
+
+        h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--swiggy-dark);
+        }
+
+        h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--swiggy-text);
+        }
+
+        .text-small {
+            font-size: 12px;
+            color: var(--swiggy-text-light);
+        }
+
+        .text-medium {
+            font-size: 14px;
+            color: var(--swiggy-text-light);
+        }
+
+        /* --- Header (Restaurant Page) --- */
+        .restaurant-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 16px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--swiggy-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* --- Restaurant Info Card --- */
+        .restaurant-info {
+            padding: 0 16px 20px;
+        }
+
+        .restaurant-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .rating-badge {
+            background: var(--swiggy-green);
+            color: white;
+            padding: 4px 6px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .restaurant-meta {
+            color: var(--swiggy-text-light);
+            font-size: 14px;
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .delivery-time-card {
+            background: var(--swiggy-bg);
+            padding: 12px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .delivery-time-card p {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--swiggy-text);
+        }
+
+        /* --- Menu List --- */
+        .menu-section {
+            padding: 16px 0;
+        }
+
+        .menu-section-title {
+            padding: 0 16px 16px;
+        }
+
+        .menu-item {
+            display: flex;
+            padding: 16px;
+            gap: 16px;
+        }
+
+        .menu-item-details {
+            flex: 1;
+        }
+
+        .veg-indicator {
+            width: 14px;
+            height: 14px;
+            border: 1px solid var(--swiggy-green);
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 6px;
+        }
+
+        .veg-indicator::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--swiggy-green);
+            border-radius: 50%;
+        }
+
+        .non-veg-indicator {
+            border-color: var(--swiggy-red);
+        }
+
+        .non-veg-indicator::after {
+            background: var(--swiggy-red);
+            border-radius: 50%;
+            /* Swiggy uses triangle, but circle is fine for mock */
+        }
+
+        .item-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--swiggy-text);
+            margin-bottom: 4px;
+        }
+
+        .item-price {
+            font-weight: 500;
+            color: var(--swiggy-dark);
+            margin-bottom: 8px;
+        }
+
+        .item-desc {
+            font-size: 13px;
+            color: var(--swiggy-text-light);
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            /* Adding standard property to fix lint */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .menu-item-image {
+            width: 118px;
+            height: 118px;
+            border-radius: 12px;
+            background-color: var(--swiggy-bg);
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .menu-item-image .add-btn {
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* --- Custom Bottom Bar (Group Order Entry) --- */
+        .bottom-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            padding: 16px 16px calc(var(--safe-bottom) + 16px);
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
+            display: flex;
+            gap: 12px;
+            z-index: 100;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .bottom-bar.visible {
+            transform: translateY(0);
+        }
+
+        /* Group Order specific styling for CTA */
+        .group-order-cta {
+            background: var(--swiggy-orange-light);
+            border: 1px solid var(--swiggy-orange);
+            color: var(--swiggy-orange-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 14px;
+        }
+
+        .group-order-cta i {
+            color: var(--swiggy-orange);
+        }
+
+        #viewCartBtn {
+            flex: 1.5;
+        }
+
+        #groupOrderTriggerBtn {
+            flex: 1;
+        }
+
+        /* --- Screens --- */
+        .screen {
+            display: none;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: white;
+            z-index: 150;
+            margin-top: var(--safe-top);
+        }
+
+        .screen.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Mock data images */
+        .img-kejriwal {
+            background-image: url('https://images.unsplash.com/photo-1525351484163-7529414344d8?w=500&q=80');
+        }
+
+        .img-salad {
+            background-image: url('https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500&q=80');
+        }
+
+        .img-dessert {
+            background-image: url('https://images.unsplash.com/photo-1551024506-0cb4a16315ef?w=500&q=80');
+        }
+        /* --- Iframe Mode: Remove device frame when embedded --- */
+        /* When this page is loaded inside an iframe (e.g. case study),
+           hide the phone frame so it doesn't double up */
+    </style>
+    <script>
+        if (window.self !== window.top) {
+            // We're inside an iframe — inject iframe-mode styles
+            const style = document.createElement('style');
+            style.textContent = `
+                html, body {
+                    background: white !important;
+                    background-image: none !important;
+                    overflow: hidden !important;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                    width: 100% !important;
+                    height: 100% !important;
+                }
+                .device-container {
+                    width: 100% !important;
+                    height: 100% !important;
+                    border-radius: 0 !important;
+                    box-shadow: none !important;
+                    transform: none !important;
+                    background-color: white !important;
+                }
+                .dynamic-island {
+                    display: none !important;
+                }
+                .status-bar {
+                    display: none !important;
+                }
+                .app-content {
+                    margin-top: 0 !important;
+                    padding-top: 8px !important;
+                    background-color: white !important;
+                }
+            `;
+            document.addEventListener('DOMContentLoaded', () => {
+                document.head.appendChild(style);
+            });
+        }
+    </script>
+</head>
+
+<body>
+
+    <!-- iPhone Device Frame -->
+    <div class="device-container">
+
+        <!-- Hardware Mocks -->
+        <div class="dynamic-island"></div>
+        <div class="status-bar">
+            <span id="clock">12:30</span>
+            <div class="status-icons">
+                <i data-lucide="bar-chart-2" style="width: 16px; height: 16px; transform: rotate(90deg);"></i>
+                <i data-lucide="wifi" style="width: 16px; height: 16px;"></i>
+                <i data-lucide="battery-full" style="width: 18px; height: 18px;"></i>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- SCREEN 1: Restaurant Menu                  -->
+        <!-- ========================================== -->
+        <div id="screen-restaurant" class="app-content">
+
+            <header class="restaurant-header">
+                <button class="icon-btn"><i data-lucide="arrow-left"></i></button>
+                <div class="header-actions">
+                    <button class="icon-btn"><i data-lucide="search"></i></button>
+                    <button class="icon-btn"><i data-lucide="share-2"></i></button>
+                </div>
+            </header>
+
+            <div class="restaurant-info">
+                <div class="restaurant-title-row">
+                    <h1>The Bombay Canteen</h1>
+                    <div class="rating-badge">
+                        4.5 <i data-lucide="star" style="width: 12px; height: 12px; fill: white;"></i>
+                    </div>
+                </div>
+                <div class="restaurant-meta">
+                    <span>Indian, Street Food, Salads</span>
+                    <span>Lower Parel | 2.5 km</span>
+                </div>
+
+                <div class="delivery-time-card">
+                    <i data-lucide="clock" style="color: var(--swiggy-text-lighter);"></i>
+                    <div>
+                        <p>30-35 mins</p>
+                        <span class="text-small">Free delivery on orders above ₹199</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="menu-section">
+                <h2 class="menu-section-title">Recommended (3)</h2>
+
+                <!-- Item 1 -->
+                <div class="menu-item">
+                    <div class="menu-item-details">
+                        <div class="veg-indicator"></div>
+                        <div class="item-title">Eggs Kejriwal Toast</div>
+                        <div class="item-price">₹325</div>
+                        <div class="item-desc">A classic Bombay street food favourite. Fried egg on toast with melted
+                            cheese and spicy green chilli chutney.</div>
+                    </div>
+                    <div class="menu-item-image img-kejriwal">
+                        <div class="add-btn" data-id="1" data-price="325" data-name="Eggs Kejriwal">
+                            <span class="add-btn-text">ADD</span>
+                            <div class="add-btn-qty-controls">
+                                <span class="qty-action qty-minus">-</span>
+                                <span class="qty-value">1</span>
+                                <span class="qty-action qty-plus">+</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider-thin"></div>
+
+                <!-- Item 2 -->
+                <div class="menu-item">
+                    <div class="menu-item-details">
+                        <div class="veg-indicator non-veg-indicator"></div>
+                        <div class="item-title">Barley & Jowar Salad</div>
+                        <div class="item-price">₹395</div>
+                        <div class="item-desc">Rocket leaves, grilled chicken, pomegranate, jowar pops with a tamarind
+                            dressing.</div>
+                    </div>
+                    <div class="menu-item-image img-salad">
+                        <div class="add-btn" data-id="2" data-price="395" data-name="Barley Salad">
+                            <span class="add-btn-text">ADD</span>
+                            <div class="add-btn-qty-controls">
+                                <span class="qty-action qty-minus">-</span>
+                                <span class="qty-value">1</span>
+                                <span class="qty-action qty-plus">+</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider-thin"></div>
+
+                <!-- Item 3 -->
+                <div class="menu-item">
+                    <div class="menu-item-details">
+                        <div class="veg-indicator"></div>
+                        <div class="item-title">Filter Coffee Gulab Nut</div>
+                        <div class="item-price">₹290</div>
+                        <div class="item-desc">Donut shaped gulab jamun soaked in old monk rum and filter coffee syrup.
+                            contains alcohol.</div>
+                    </div>
+                    <div class="menu-item-image img-dessert">
+                        <div class="add-btn" data-id="3" data-price="290" data-name="Gulab Nut">
+                            <span class="add-btn-text">ADD</span>
+                            <div class="add-btn-qty-controls">
+                                <span class="qty-action qty-minus">-</span>
+                                <span class="qty-value">1</span>
+                                <span class="qty-action qty-plus">+</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Sticky Bottom Bar (Shows when items added) -->
+            <div class="bottom-bar" id="restaurantBottomBar">
+                <button class="btn group-order-cta" id="groupOrderTriggerBtn">
+                    <i data-lucide="users"></i> Group Order
+                </button>
+                <button class="btn btn-primary" id="viewCartBtn">
+                    View Cart (<span id="cartCount">0</span>)
+                </button>
+            </div>
+
+        </div>
+
+        <!-- ========================================== -->
+        <!-- SCREEN 2: Group Order Setup                -->
+        <!-- ========================================== -->
+        <div id="screen-group-setup" class="screen app-content" style="background-color: var(--swiggy-bg);">
+            <header class="restaurant-header" style="background: white;">
+                <button class="icon-btn" onclick="switchScreen('screen-restaurant')"><i data-lucide="x"></i></button>
+                <h2 style="margin: 0;">Group Order</h2>
+                <div style="width: 24px;"></div> <!-- Spacer -->
+            </header>
+
+            <div
+                style="padding: 24px; text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <div
+                    style="width: 80px; height: 80px; background: var(--swiggy-orange-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 24px;">
+                    <i data-lucide="users" style="color: var(--swiggy-orange); width: 40px; height: 40px;"></i>
+                </div>
+                <h2 style="margin-bottom: 12px; font-size: 22px;">Order Together, Pay Fairly</h2>
+                <p style="color: var(--swiggy-text-light); margin-bottom: 32px; font-size: 15px; line-height: 1.5;">
+                    Create a group order link. Friends add their own food. We'll automatically split the bill exactly
+                    how you want.</p>
+
+                <div
+                    style="background: white; border-radius: 12px; padding: 16px; width: 100%; border: 1px solid var(--swiggy-border); text-align: left; margin-bottom: 32px;">
+                    <div style="font-weight: 600; margin-bottom: 4px;">Ordering from</div>
+                    <div style="color: var(--swiggy-text-light); font-size: 14px;">The Bombay Canteen • Lower Parel
+                    </div>
+                </div>
+
+                <button class="btn btn-orange" style="margin-bottom: 16px;" onclick="startGroupSession()">
+                    Create Group Order
+                </button>
+                <button class="btn btn-outline" style="border: none; color: var(--swiggy-text-light);"
+                    onclick="switchScreen('screen-restaurant')">
+                    Cancel
+                </button>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- SCREEN 2.5: Share / Invite Link            -->
+        <!-- ========================================== -->
+        <div id="screen-share-link" class="screen app-content" style="background-color: var(--swiggy-bg);">
+            <header class="restaurant-header"
+                style="background: white; border-bottom: 1px solid var(--swiggy-border-light); padding: 16px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <button class="icon-btn" onclick="switchScreen('screen-group-setup')"><i
+                            data-lucide="arrow-left"></i></button>
+                    <h2 style="margin: 0; font-size: 16px;">Invite Friends</h2>
+                </div>
+            </header>
+
+            <div
+                style="padding: 24px; text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; margin-top: 24px;">
+
+                <div
+                    style="width: 72px; height: 72px; background: white; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: center; margin-bottom: 24px; border: 1px solid var(--swiggy-border-light);">
+                    <i data-lucide="link" style="color: var(--swiggy-orange); width: 32px; height: 32px;"></i>
+                </div>
+
+                <h2 style="margin-bottom: 12px; font-size: 20px;">Group Order Link Ready!</h2>
+                <p style="color: var(--swiggy-text-light); margin-bottom: 40px; font-size: 14px; line-height: 1.5;">
+                    Share this link with your friends so they can add their own food to the cart.</p>
+
+                <!-- Share Options Grid -->
+                <div style="display: flex; gap: 32px; margin-bottom: 48px; justify-content: center; width: 100%;">
+                    <!-- WhatsApp -->
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; cursor: pointer;"
+                        onclick="alert('Opening WhatsApp...')">
+                        <div
+                            style="width: 56px; height: 56px; border-radius: 50%; background: #25D366; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);">
+                            <i data-lucide="message-circle" style="width: 28px; height: 28px;"></i>
+                        </div>
+                        <span style="font-size: 13px; font-weight: 600; color: var(--swiggy-text);">WhatsApp</span>
+                    </div>
+
+                    <!-- Instagram -->
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; cursor: pointer;"
+                        onclick="alert('Opening Instagram...')">
+                        <div
+                            style="width: 56px; height: 56px; border-radius: 50%; background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%,#d6249f 60%,#285AEB 90%); display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 4px 10px rgba(214, 36, 159, 0.3);">
+                            <i data-lucide="instagram" style="width: 28px; height: 28px;"></i>
+                        </div>
+                        <span style="font-size: 13px; font-weight: 600; color: var(--swiggy-text);">Instagram</span>
+                    </div>
+
+                    <!-- Text Message -->
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; cursor: pointer;"
+                        onclick="alert('Opening Messages...')">
+                        <div
+                            style="width: 56px; height: 56px; border-radius: 50%; background: #007AFF; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 4px 10px rgba(0, 122, 255, 0.3);">
+                            <i data-lucide="message-square" style="width: 28px; height: 28px;"></i>
+                        </div>
+                        <span style="font-size: 13px; font-weight: 600; color: var(--swiggy-text);">Messages</span>
+                    </div>
+                </div>
+
+                <div
+                    style="background: white; border-radius: 12px; padding: 16px; width: 100%; border: 1px dashed var(--swiggy-border); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <i data-lucide="link-2" style="color: var(--swiggy-text-lighter); width: 16px;"></i>
+                    <span
+                        style="color: var(--swiggy-text-light); font-size: 14px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; max-width: 200px;">swiggy.com/group/abc-xyz-123</span>
+                </div>
+
+            </div>
+
+            <div
+                style="position: absolute; bottom: 0; left: 0; width: 100%; background: white; padding: 16px 16px calc(var(--safe-bottom) + 16px); box-shadow: 0 -4px 12px rgba(0,0,0,0.05);">
+                <button class="btn btn-primary" onclick="proceedToGroupCart()">
+                    <i data-lucide="copy" style="width: 18px; margin-right: 4px;"></i> Copy Group Invite Link
+                </button>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- SCREEN 3: Collaborative Cart               -->
+        <!-- ========================================== -->
+        <div id="screen-group-cart" class="screen app-content" style="background-color: var(--swiggy-bg);">
+
+            <!-- Sticky Header -->
+            <header class="restaurant-header"
+                style="background: white; border-bottom: 1px solid var(--swiggy-border-light); padding: 12px 16px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <button class="icon-btn" onclick="leaveGroupConfirm()"><i data-lucide="arrow-left"></i></button>
+                    <div>
+                        <h2 style="margin: 0; font-size: 16px;">Group Order</h2>
+                        <span style="font-size: 12px; color: var(--swiggy-text-light);">The Bombay Canteen</span>
+                    </div>
+                </div>
+                <button class="icon-btn"
+                    style="color: var(--swiggy-orange); font-size: 14px; font-weight: 600; padding: 6px 12px; background: var(--swiggy-orange-light); border-radius: 20px;"
+                    onclick="switchScreen('screen-share-link')">
+                    <i data-lucide="share" style="width: 14px; height: 14px; margin-right: 4px;"></i> Invite
+                </button>
+            </header>
+
+            <!-- Active Members Scroller -->
+            <div
+                style="background: white; padding: 16px; display: flex; gap: 16px; overflow-x: auto; border-bottom: 1px solid var(--swiggy-border-light);">
+
+                <!-- You (Creator) -->
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 60px;">
+                    <div
+                        style="width: 48px; height: 48px; border-radius: 50%; background: var(--swiggy-orange); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; position: relative;">
+                        Y
+                        <div
+                            style="position: absolute; bottom: 0; right: 0; background: var(--swiggy-dark); color: white; font-size: 8px; padding: 2px 4px; border-radius: 4px; border: 1px solid white;">
+                            Host</div>
+                    </div>
+                    <span style="font-size: 11px; font-weight: 600; color: var(--swiggy-dark);">You</span>
+                </div>
+
+                <!-- Mock User 1 -->
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 60px;">
+                    <div
+                        style="width: 48px; height: 48px; border-radius: 50%; background: #2b5cff; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; position: relative;">
+                        R
+                        <div
+                            style="position: absolute; bottom: 0; right: 0; width: 12px; height: 12px; background: var(--swiggy-green); border-radius: 50%; border: 2px solid white;">
+                        </div>
+                    </div>
+                    <span style="font-size: 11px; font-weight: 600; color: var(--swiggy-text);">Rahul</span>
+                </div>
+
+                <!-- Mock User 2 -->
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 60px;">
+                    <div
+                        style="width: 48px; height: 48px; border-radius: 50%; background: #e0247d; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; position: relative;">
+                        S
+                        <div
+                            style="position: absolute; bottom: 0; right: 0; width: 12px; height: 12px; background: var(--swiggy-green); border-radius: 50%; border: 2px solid white;">
+                        </div>
+                    </div>
+                    <span style="font-size: 11px; font-weight: 600; color: var(--swiggy-text);">Sneha</span>
+                </div>
+            </div>
+
+            <!-- Group's Cart Section -->
+            <div style="padding: 16px;">
+                <h3
+                    style="margin-bottom: 12px; font-size: 14px; text-transform: uppercase; color: var(--swiggy-text-light); letter-spacing: 0.5px;">
+                    Everyone's Order</h3>
+
+                <div id="groupCartContents"
+                    style="background: white; border-radius: 12px; padding: 16px; border: 1px solid var(--swiggy-border); margin-bottom: 16px;">
+                    <!-- Items will be injected here by JS -->
+                </div>
+
+                <button class="btn btn-outline" style="background: white;" onclick="switchScreen('screen-restaurant')">
+                    <i data-lucide="plus" style="width: 18px;"></i> Add more items
+                </button>
+            </div>
+
+            <!-- Bottom Sticky Action (Go to Split Bill) -->
+            <div
+                style="position: absolute; bottom: 0; left: 0; width: 100%; background: white; padding: 16px 16px calc(var(--safe-bottom) + 16px); box-shadow: 0 -4px 12px rgba(0,0,0,0.05);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <div>
+                        <div style="font-size: 12px; color: var(--swiggy-text-light);">Group Total</div>
+                        <div style="font-weight: 700; font-size: 18px; color: var(--swiggy-dark);" id="groupCartTotal">
+                            ₹0</div>
+                    </div>
+                    <!-- Small indicator of who is paying -->
+                    <div style="text-align: right;">
+                        <span
+                            style="background: var(--swiggy-bg); padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">3
+                            Members</span>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="proceedToSplitPayment()">
+                    View Split Options <i data-lucide="chevron-right" style="width: 18px;"></i>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- ========================================== -->
+        <!-- SCREEN 4: Split Payment Options            -->
+        <!-- ========================================== -->
+        <div id="screen-split" class="screen app-content" style="background-color: var(--swiggy-bg);">
+
+            <header class="restaurant-header"
+                style="background: white; border-bottom: 1px solid var(--swiggy-border-light); padding: 16px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <button class="icon-btn" onclick="switchScreen('screen-group-cart')"><i
+                            data-lucide="arrow-left"></i></button>
+                    <h2 style="margin: 0; font-size: 18px;">How to split?</h2>
+                </div>
+            </header>
+
+            <div style="padding: 16px;">
+
+                <!-- Split Type Selector -->
+                <div
+                    style="background: white; border-radius: 12px; padding: 4px; display: flex; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 24px;">
+                    <button id="btnSplitDutch" class="split-tab active" onclick="setSplitType('dutch')"
+                        style="flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; background: var(--swiggy-dark); color: white; transition: all 0.2s;">
+                        Dutch Split
+                    </button>
+                    <button id="btnSplitEqual" class="split-tab" onclick="setSplitType('equal')"
+                        style="flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; background: transparent; color: var(--swiggy-text-light); transition: all 0.2s;">
+                        Split Equally
+                    </button>
+                </div>
+
+                <div
+                    style="background: white; border-radius: 12px; padding: 16px; border: 1px solid var(--swiggy-border); margin-bottom: 24px;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <span style="font-weight: 700; font-size: 16px;">Bill Details</span>
+                        <span style="font-weight: 700; font-size: 16px; color: var(--swiggy-dark);"
+                            id="splitGrandTotal">₹0</span>
+                    </div>
+
+                    <div
+                        style="font-size: 13px; color: var(--swiggy-text-light); display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span>Item Total</span>
+                        <span id="splitItemTotal">₹0</span>
+                    </div>
+                    <div
+                        style="font-size: 13px; color: var(--swiggy-text-light); display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span>Taxes & Charges (Proportional)</span>
+                        <span id="splitTaxes">₹0</span>
+                    </div>
+                    <div
+                        style="font-size: 13px; color: var(--swiggy-text-light); display: flex; justify-content: space-between; margin-bottom: 16px;">
+                        <span>Delivery Fee (Split equally)</span>
+                        <span id="splitDelivery">₹45</span>
+                    </div>
+
+                    <div class="divider-thin" style="margin: 0 -16px 16px;"></div>
+
+                    <div style="font-weight: 600; font-size: 14px; margin-bottom: 12px;">Who pays what</div>
+
+                    <div id="splitBreakdownList">
+                        <!-- Injected via JS -->
+                    </div>
+
+                </div>
+
+                <div class="callout"
+                    style="padding: 12px; font-size: 12px; display: flex; gap: 12px; align-items: flex-start; margin-bottom: 24px;">
+                    <i data-lucide="info"
+                        style="color: var(--swiggy-orange); width: 16px; flex-shrink: 0; margin-top: 2px;"></i>
+                    <span style="color: var(--swiggy-text);"><strong>You will pay the full amount now.</strong><br>We
+                        will send a Swiggy notification and a payment link to Rahul & Sneha to pay you back via
+                        UPI.</span>
+                </div>
+            </div>
+
+            <!-- Bottom Sticky Action -->
+            <div
+                style="position: absolute; bottom: 0; left: 0; width: 100%; background: white; padding: 16px 16px calc(var(--safe-bottom) + 16px); box-shadow: 0 -4px 12px rgba(0,0,0,0.05);">
+                <button class="btn btn-primary" onclick="proceedToFinalCheckout()" id="btnProceedPay">
+                    Proceed to Pay ₹0
+                </button>
+            </div>
+
+        </div>
+
+        <!-- ========================================== -->
+        <!-- SCREEN 5: Payment Success / Processing     -->
+        <!-- ========================================== -->
+        <div id="screen-checkout" class="screen app-content"
+            style="background-color: white; justify-content: center; align-items: center;">
+            <div style="text-align: center; padding: 24px;">
+                <div
+                    style="width: 80px; height: 80px; background: var(--swiggy-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px;">
+                    <i data-lucide="check" style="color: white; width: 40px; height: 40px;"></i>
+                </div>
+                <h2 style="font-size: 24px; margin-bottom: 12px;">Order Placed!</h2>
+                <p style="color: var(--swiggy-text-light); margin-bottom: 24px; font-size: 15px; line-height: 1.5;">Your
+                    group order from The Bombay Canteen is confirmed. We have notified Rahul and Sneha about their exact
+                    shares.</p>
+
+                <div
+                    style="background: var(--swiggy-bg); padding: 16px; border-radius: 12px; text-align: left; margin-bottom: 32px;">
+                    <div
+                        style="font-size: 12px; color: var(--swiggy-text-light); text-transform: uppercase; font-weight: 700; margin-bottom: 8px;">
+                        To Collect</div>
+                    <div id="checkoutCollectAmount"
+                        style="font-size: 24px; font-weight: 800; color: var(--swiggy-dark); margin-bottom: 4px;">₹0
+                    </div>
+                    <div
+                        style="font-size: 13px; color: var(--swiggy-green); display: flex; align-items: center; gap: 4px;">
+                        <i data-lucide="send" style="width: 14px;"></i> Reminders sent automatically
+                    </div>
+                </div>
+
+                <button class="btn btn-orange" onclick="resetPrototype()">
+                    Track Order
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Update mock clock
+        function updateClock() {
+            const now = new Date();
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            hours = hours < 10 ? '0' + hours : hours;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            document.getElementById('clock').textContent = `${hours}:${minutes}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Application State
+        const state = {
+            cart: {} // { '1': {name: 'Eggs Kejriwal', price: 325, qty: 1} }
+        };
+
+        // UI Elements
+        const addBtns = document.querySelectorAll('.add-btn');
+        const bottomBar = document.getElementById('restaurantBottomBar');
+        const cartCountEl = document.getElementById('cartCount');
+
+        // Group Order State
+        const groupState = {
+            isActive: false,
+            members: [
+                { id: 'u1', name: 'You', initials: 'Y', color: 'var(--swiggy-orange)', isHost: true },
+                { id: 'u2', name: 'Rahul', initials: 'R', color: '#2b5cff', isHost: false },
+                { id: 'u3', name: 'Sneha', initials: 'S', color: '#e0247d', isHost: false }
+            ],
+            // Mock their carts
+            memberCarts: {
+                'u2': [{ id: 'm1', name: 'Chole Bhature', price: 210, qty: 1 }],
+                'u3': [{ id: 'm2', name: 'Masala Dosa', price: 160, qty: 1 }, { id: 'm3', name: 'Filter Coffee', price: 90, qty: 1 }]
+            }
+        };
+
+        // Navigation Logic
+        function switchScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            // If switching back to restaurant, don't hide the main background (which is the restaurant)
+            if (screenId !== 'screen-restaurant') {
+                document.getElementById(screenId).classList.add('active');
+            }
+        }
+
+        // --- Interaction Handlers --- //
+
+        // 1. User clicks "Group Order" CTA on Restaurant Page
+        document.getElementById('groupOrderTriggerBtn').addEventListener('click', () => {
+            switchScreen('screen-group-setup');
+        });
+
+        // 2. User confirms starting the session
+        function startGroupSession() {
+            switchScreen('screen-share-link');
+        }
+
+        // Navigate from Share screen to Cart
+        function proceedToGroupCart() {
+            // Copy logic mockup
+            const btn = document.querySelector('#screen-share-link .btn-primary');
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = `<i data-lucide="check" style="width: 18px; margin-right: 4px;"></i> Copied!`;
+            lucide.createIcons();
+
+            setTimeout(() => {
+                btn.innerHTML = originalHtml;
+                lucide.createIcons();
+                groupState.isActive = true;
+                renderGroupCart();
+                switchScreen('screen-group-cart');
+            }, 800);
+        }
+
+        function leaveGroupConfirm() {
+            if (confirm("Are you sure you want to exit the group order?")) {
+                groupState.isActive = false;
+                switchScreen('screen-restaurant');
+            }
+        }
+
+        // Render the Collaborative Cart
+        function renderGroupCart() {
+            const container = document.getElementById('groupCartContents');
+            let total = 0;
+            let html = '';
+
+            // Add 'You' (from state.cart)
+            let myTotal = 0;
+            let myItemsHtml = '';
+            for (const id in state.cart) {
+                const item = state.cart[id];
+                const itemTotal = item.price * item.qty;
+                myTotal += itemTotal;
+                myItemsHtml += `
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px;">
+                        <span>${item.qty} x ${item.name}</span>
+                        <span>₹${itemTotal}</span>
+                    </div>
+                `;
+            }
+            if (myTotal > 0) {
+                html += renderMemberCartBlock(groupState.members[0], myItemsHtml, myTotal);
+                total += myTotal;
+            }
+
+            // Add Rahul's mock items
+            let rTotal = 0;
+            let rHtml = '';
+            groupState.memberCarts['u2'].forEach(item => {
+                const itemTotal = item.price * item.qty;
+                rTotal += itemTotal;
+                rHtml += `
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px;">
+                        <span>${item.qty} x ${item.name}</span>
+                        <span>₹${itemTotal}</span>
+                    </div>
+                `;
+            });
+            html += renderMemberCartBlock(groupState.members[1], rHtml, rTotal);
+            total += rTotal;
+
+            // Add Sneha's mock items
+            let sTotal = 0;
+            let sHtml = '';
+            groupState.memberCarts['u3'].forEach(item => {
+                const itemTotal = item.price * item.qty;
+                sTotal += itemTotal;
+                sHtml += `
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px;">
+                        <span>${item.qty} x ${item.name}</span>
+                        <span>₹${itemTotal}</span>
+                    </div>
+                `;
+            });
+            html += renderMemberCartBlock(groupState.members[2], sHtml, sTotal);
+            total += sTotal;
+
+            if (html === '') {
+                html = '<div style="text-align: center; color: var(--swiggy-text-light); padding: 20px 0; font-size: 13px;">No items added yet.</div>';
+            }
+
+            container.innerHTML = html;
+            document.getElementById('groupCartTotal').textContent = `₹${total}`;
+        }
+
+        function renderMemberCartBlock(member, itemsHtml, total) {
+            return `
+                <div style="margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px dashed var(--swiggy-border);">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                        <div style="width: 24px; height: 24px; border-radius: 50%; background: ${member.color}; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 10px;">
+                            ${member.initials}
+                        </div>
+                        <span style="font-weight: 600; font-size: 14px;">${member.name}</span>
+                        <span style="margin-left: auto; font-weight: 600; font-size: 14px;">₹${total}</span>
+                    </div>
+                    <div style="padding-left: 32px; color: var(--swiggy-text);">
+                        ${itemsHtml}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Go to screen 4
+        function proceedToSplitPayment() {
+            calculateSplit('dutch'); // Default to dutch
+            switchScreen('screen-split');
+        }
+
+        // --- Calculation Logic (Core Feature) --- //
+        const FEES = {
+            taxRate: 0.05, // 5% GST
+            delivery: 45
+        };
+
+        let currentSplitData = {
+            totalItems: 0,
+            taxes: 0,
+            grandTotal: 0,
+            shares: []
+        };
+
+        function calculateSplit(type) {
+            // 1. Calculate raw item totals per member
+            let itemTotals = {
+                'u1': 0, 'u2': 0, 'u3': 0
+            };
+
+            let totalItemsSum = 0;
+
+            // Host items
+            for (const id in state.cart) {
+                const cost = state.cart[id].price * state.cart[id].qty;
+                itemTotals['u1'] += cost;
+                totalItemsSum += cost;
+            }
+
+            // Friend items
+            groupState.memberCarts['u2'].forEach(i => { itemTotals['u2'] += (i.price * i.qty); totalItemsSum += (i.price * i.qty); });
+            groupState.memberCarts['u3'].forEach(i => { itemTotals['u3'] += (i.price * i.qty); totalItemsSum += (i.price * i.qty); });
+
+            // 2. Calculate universal fees
+            const totalTaxes = totalItemsSum * FEES.taxRate;
+            const grandTotal = totalItemsSum + totalTaxes + FEES.delivery;
+
+            const numMembers = 3;
+
+            // 3. Calculate Shares based on Type
+            currentSplitData.shares = groupState.members.map(member => {
+                let finalShare = 0;
+                let breakdownStr = '';
+
+                if (type === 'equal') {
+                    // Equal Split: Grand total / N
+                    finalShare = grandTotal / numMembers;
+                    breakdownStr = 'Equal split of total bill';
+                }
+                else if (type === 'dutch') {
+                    // Dutch Split: My Items + (My Items / Total Items * Taxes) + (Delivery / N)
+                    const myItemTotal = itemTotals[member.id];
+                    const taxProportion = totalItemsSum > 0 ? (myItemTotal / totalItemsSum) * totalTaxes : 0;
+                    const deliveryShare = FEES.delivery / numMembers;
+
+                    finalShare = myItemTotal + taxProportion + deliveryShare;
+                    breakdownStr = `₹${myItemTotal} items + ₹${taxProportion.toFixed(1)} tax + ₹${deliveryShare.toFixed(1)} del`;
+                }
+
+                return {
+                    ...member,
+                    share: finalShare,
+                    breakdown: breakdownStr
+                };
+            });
+
+            currentSplitData.totalItems = totalItemsSum;
+            currentSplitData.taxes = totalTaxes;
+            currentSplitData.grandTotal = grandTotal;
+
+            renderSplitScreen();
+        }
+
+        function setSplitType(type) {
+            // Update tabs UI
+            if (type === 'dutch') {
+                document.getElementById('btnSplitDutch').style.background = 'var(--swiggy-dark)';
+                document.getElementById('btnSplitDutch').style.color = 'white';
+                document.getElementById('btnSplitEqual').style.background = 'transparent';
+                document.getElementById('btnSplitEqual').style.color = 'var(--swiggy-text-light)';
+            } else {
+                document.getElementById('btnSplitEqual').style.background = 'var(--swiggy-dark)';
+                document.getElementById('btnSplitEqual').style.color = 'white';
+                document.getElementById('btnSplitDutch').style.background = 'transparent';
+                document.getElementById('btnSplitDutch').style.color = 'var(--swiggy-text-light)';
+            }
+            calculateSplit(type);
+        }
+
+        function renderSplitScreen() {
+            document.getElementById('splitItemTotal').textContent = `₹${currentSplitData.totalItems.toFixed(0)}`;
+            document.getElementById('splitTaxes').textContent = `₹${currentSplitData.taxes.toFixed(0)}`;
+            document.getElementById('splitGrandTotal').textContent = `₹${currentSplitData.grandTotal.toFixed(0)}`;
+            document.getElementById('btnProceedPay').textContent = `Proceed to Pay ₹${currentSplitData.grandTotal.toFixed(0)}`;
+
+            const listContainer = document.getElementById('splitBreakdownList');
+            let listHtml = '';
+
+            let amountToCollect = 0;
+
+            currentSplitData.shares.forEach(s => {
+                const owesTxt = s.isHost ? 'You pay' : 'Owes you';
+                const owesColor = s.isHost ? 'var(--swiggy-text-light)' : 'var(--swiggy-green)';
+
+                if (!s.isHost) {
+                    amountToCollect += s.share;
+                }
+
+                listHtml += `
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 32px; height: 32px; border-radius: 50%; background: ${s.color}; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px;">
+                                ${s.initials}
+                            </div>
+                            <div>
+                                <div style="font-weight: 600; font-size: 14px; color: var(--swiggy-dark);">${s.name}</div>
+                                <div style="font-size: 11px; color: var(--swiggy-text-lighter);">${s.breakdown}</div>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-weight: 700; font-size: 15px; color: var(--swiggy-dark);">₹${s.share.toFixed(0)}</div>
+                            <div style="font-size: 11px; font-weight: 600; color: ${owesColor};">${owesTxt}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            listContainer.innerHTML = listHtml;
+            // Save amount to collect for success screen
+            document.getElementById('checkoutCollectAmount').textContent = `₹${amountToCollect.toFixed(0)}`;
+        }
+
+        // 5. Final Checkout
+        function proceedToFinalCheckout() {
+            // Mocking payment processing delay
+            const btn = document.getElementById('btnProceedPay');
+            btn.innerHTML = `<i data-lucide="loader-2" class="lucide-spin" style="animation: spin 1s linear infinite;"></i> Processing...`;
+            lucide.createIcons();
+
+            setTimeout(() => {
+                switchScreen('screen-checkout');
+                btn.innerHTML = `Proceed to Pay ₹${currentSplitData.grandTotal.toFixed(0)}`; // reset
+            }, 1000);
+        }
+
+        function resetPrototype() {
+            // Full reset
+            state.cart = {};
+            groupState.isActive = false;
+            updateCartUI();
+            setSplitType('dutch');
+            switchScreen('screen-restaurant');
+        }
+
+        // Add CSS for spinner
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes spin { 100% { transform: rotate(360deg); } }
+        `;
+        document.head.appendChild(style);
+
+        // Update Cart UI (Modified to handle Group Order CTA states)
+        function updateCartUI() {
+            let totalItems = 0;
+            for (const id in state.cart) {
+                totalItems += state.cart[id].qty;
+
+                // Update Button UI
+                const btn = document.querySelector(`.add-btn[data-id="${id}"]`);
+                if (btn) {
+                    if (state.cart[id].qty > 0) {
+                        btn.classList.add('active');
+                        btn.querySelector('.qty-value').textContent = state.cart[id].qty;
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                }
+            }
+
+            if (totalItems > 0) {
+                bottomBar.classList.add('visible');
+                cartCountEl.textContent = totalItems + (totalItems > 1 ? ' items' : ' item');
+            } else {
+                bottomBar.classList.remove('visible');
+            }
+
+            // If group is active, and they add a new item on the restaurant page, re-render group cart
+            if (groupState.isActive) {
+                renderGroupCart();
+            }
+        }
+
+        // View Cart Button overrides normal behaviour if Group is active
+        document.getElementById('viewCartBtn').addEventListener('click', () => {
+            if (groupState.isActive) {
+                switchScreen('screen-group-cart');
+            } else {
+                alert("This would open normal cart. Click Group Order for the prototype flow.");
+            }
+        });
+
+        // Event Listeners for Add Buttons
+        addBtns.forEach(btn => {
+            const id = btn.getAttribute('data-id');
+            const price = parseInt(btn.getAttribute('data-price'));
+            const name = btn.getAttribute('data-name');
+
+            // Handle initial ADD click
+            btn.addEventListener('click', (e) => {
+                if (!btn.classList.contains('active')) {
+                    state.cart[id] = { id, name, price, qty: 1 };
+                    updateCartUI();
+                }
+            });
+
+            // Handle Plus
+            const plusBtn = btn.querySelector('.qty-plus');
+            plusBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                state.cart[id].qty += 1;
+                updateCartUI();
+            });
+
+            // Handle Minus
+            const minusBtn = btn.querySelector('.qty-minus');
+            minusBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                state.cart[id].qty -= 1;
+                if (state.cart[id].qty === 0) {
+                    delete state.cart[id];
+                }
+                updateCartUI();
+            });
+        });
+
+    </script>
+</body>
+
+</html>
